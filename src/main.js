@@ -21,19 +21,19 @@ render(siteMainElement, createMainNavigationTpl());
 render(siteMainElement, createSortTpl());
 render(siteMainElement, createFilmsSectionTpl());
 
-const filmsSection = siteMainElement.querySelector('.films');
+const filmsSectionElement = siteMainElement.querySelector('.films');
 
-render(filmsSection, createFilmsListTpl());
+render(filmsSectionElement, createFilmsListTpl());
 
-const filmsListContainer = filmsSection.querySelector('.films-list__container');
+const filmsListContainerElement = filmsSectionElement.querySelector('.films-list__container');
 
 const FILM_COUNT = 5;
 
 for (let i = 1; i <= FILM_COUNT; i++) {
-  render(filmsListContainer, createFildCardTpl());
+  render(filmsListContainerElement, createFildCardTpl());
 }
 
-render(filmsListContainer, createButtonShowMoreTpl(), 'afterend');
+render(filmsListContainerElement, createButtonShowMoreTpl(), 'afterend');
 
 const siteFooterElement = document.querySelector('.footer');
 render(siteFooterElement, createFilmDetailsTpl(), 'afterend');
