@@ -1,4 +1,6 @@
-export const createSortTpl = () => (
+import {createElement} from '../utils.js';
+
+const createSortTpl = () => (
   `<ul class="sort">
       <li>
         <a href="#" class="sort__button sort__button--active">Sort by default</a>
@@ -13,3 +15,25 @@ export const createSortTpl = () => (
       </li>
     </ul>`
 );
+
+export default class Sort {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortTpl();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
