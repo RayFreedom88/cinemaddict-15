@@ -49,10 +49,21 @@ const renderNavMenu = (navMenuContainer, navMenuFilter) => {
   filterItems.forEach((item) => item.addEventListener('click', filterItemClickHandler));
 };
 
+
 // функция рендера карточки фильма
 const renderFilmCard = (filmCardContainer, film) => {
   const filmCard = new FilmCardView(film);
   const filmDetails = new FilmDetailsView(film);
+
+  // слушатель на ESC
+  const escKeyDownHandler = (evt, action) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+
+      action();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    }
+  };
 
   const closePopup = () => {
     body.removeChild(filmDetails.getElement());
@@ -66,16 +77,11 @@ const renderFilmCard = (filmCardContainer, film) => {
     body.classList.add('hide-overflow');
 
     filmDetails.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
+
+    document.addEventListener('keydown', (evt)=> {
+      escKeyDownHandler(evt, closePopup);
+    });
   };
-
-  // const onEscKeyDown = (evt) => {
-  //   if (evt.key === 'Escape' || evt.key === 'Esc') {
-  //     evt.preventDefault();
-
-  //     closePopup();
-  //     document.removeEventListener('keydown', onEscKeyDown);
-  //   }
-  // };
 
   filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
   filmCard.getElement().querySelector('.film-card__title').addEventListener('click', openPopup);
