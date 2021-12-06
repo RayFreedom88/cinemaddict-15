@@ -200,7 +200,7 @@ export default class FilmDetails {
   }
 
   getTemplate() {
-    return createFilmDetailsTpl();
+    return createFilmDetailsTpl(this._film);
   }
 
   getElement() {
