@@ -142,32 +142,3 @@ render(siteMain, new SortView().getElement(), RenderPosition.BEFOREEND);
 
 // рендер списка фильмов
 renderFilmsList(siteMain, films);
-
-// // отображение попапа
-
-// const siteFooter = document.querySelector('.footer');
-
-// filmsListContainer.addEventListener('click', (evt) => {
-//   evt.preventDefault();
-
-//   if (!document.querySelector('.film-details') && (evt.target.classList.contains('film-card__poster') || evt.target.classList.contains('film-card__title') || evt.target.classList.contains('film-card__comments'))) {
-
-//     renderTemplate(siteFooter, createFilmDetailsTpl(films[0]), 'afterend');
-
-//     const popup = document.querySelector('.film-details');
-//     const buttonClosePopup = popup.querySelector('.film-details__close-btn');
-
-//     const ESC = 27;
-
-//     buttonClosePopup.addEventListener('click', () => {
-//       popup.remove();
-//     });
-
-//     document.addEventListener('keydown', ({keyCode}) => {
-//       if (keyCode === ESC) {
-//         popup.remove();
-//       }
-//     });
-
-//   }
-// });
