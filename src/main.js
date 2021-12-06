@@ -1,132 +1,144 @@
 // импорты моковых данных
 
 import {generateFilms} from './mock/films.js';
+import {generateFilters} from './mock/filter.js';
 
 // импорты компонентов
+import ProfileView from './view/profile.js';
+import NavMenuView from './view/nav-menu.js';
+import SortView from './view/sort.js';
+import FilmSectionView from './view/film-section.js';
+import NoFilmView from './view/no-film.js';
+// import FilmLoadingView from './view/film-loading.js';
+import FilmsListView from './view/film-list.js';
+import FilmCardView from './view/film-card.js';
+import FilmDetailsView from './view/film-details.js';
+import ButtonView from './view/button.js';
 
-import {createProfileTpl} from './view/profile.js';
-import {createMainNavigationTpl} from './view/filter.js';
-import {generateFilters} from './mock/filter.js';
-import {createSortTpl} from './view/sort.js';
-import {createFilmsSectionTpl} from './view/film-section.js';
-import {createFilmsListTpl} from './view/film-list.js';
-import {createFilmCardTpl} from './view/film-card.js';
-import {createButtonShowMoreTpl} from './view/button.js';
-import {createFilmDetailsTpl} from './view/film-details.js';
+// импорт утилиты
+import {render, RenderPosition} from './utils.js';
 
-const FILMS_COUNT_STEP = 5;
+const FILMS_COUNT_PER_STEP = 5;
 const FILMS_COUNT = 15;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilms);
+const filter = generateFilters(films);
 
-// функция отрисовки компонентов
-
-const render = (container, tpl, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, tpl);
-};
-
-// рендер профиля
-
+const body = document.querySelector('body');
 const siteHeader = document.querySelector('.header');
-
-render(siteHeader, createProfileTpl());
-
-// рендер нафигации
-
 const siteMain = document.querySelector('.main');
 
-const filters = generateFilters(films);
+// функция рендера нафигации
+const renderNavMenu = (navMenuContainer, navMenuFilter) => {
+  const navMenu = new NavMenuView(navMenuFilter);
 
-render(siteMain, createMainNavigationTpl(filters));
+  render(navMenuContainer, navMenu.getElement(), RenderPosition.BEFOREEND);
 
-const filterItems = document.querySelectorAll('.main-navigation__item');
-const filterItemClassActive = 'main-navigation__item--active';
+  const filterItems = document.querySelectorAll('.main-navigation__item');
+  const filterItemClassActive = 'main-navigation__item--active';
 
-// клик по кнопки фильтра
+  const filterItemClickHandler = (evt) => {
+    evt.preventDefault();
+    filterItems.forEach((item) => {
+      item === evt.currentTarget
+        ? item.classList.add(filterItemClassActive)
+        : item.classList.remove(filterItemClassActive);
+    });
+  };
 
-const filterItemClickHandler = (evt) => {
-  evt.preventDefault();
-  filterItems.forEach((item) => {
-    item === evt.currentTarget
-      ? item.classList.add(filterItemClassActive)
-      : item.classList.remove(filterItemClassActive);
-  });
+  filterItems.forEach((item) => item.addEventListener('click', filterItemClickHandler));
 };
 
-filterItems.forEach((item) => item.addEventListener('click', filterItemClickHandler));
+// функция рендера карточки фильма
+const renderFilmCard = (filmCardContainer, film) => {
+  const filmCard = new FilmCardView(film);
+  const filmDetails = new FilmDetailsView(film);
 
-// рендер сортировки
+  const closePopup = () => {
+    body.removeChild(filmDetails.getElement());
+    body.classList.remove('hide-overflow');
 
-render(siteMain, createSortTpl());
+    filmDetails.getElement().querySelector('.film-details__close-btn').removeEventListener('click', closePopup);
+  };
 
-// рендер секции films
+  const openPopup = () => {
+    body.appendChild(filmDetails.getElement());
+    body.classList.add('hide-overflow');
 
-render(siteMain, createFilmsSectionTpl());
+    filmDetails.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
+  };
 
-// рендер списка фильмов
+  // const onEscKeyDown = (evt) => {
+  //   if (evt.key === 'Escape' || evt.key === 'Esc') {
+  //     evt.preventDefault();
 
-const filmsSection = siteMain.querySelector('.films');
+  //     closePopup();
+  //     document.removeEventListener('keydown', onEscKeyDown);
+  //   }
+  // };
 
-render(filmsSection, createFilmsListTpl());
+  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
+  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', openPopup);
+  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', openPopup);
 
-// рендер карточек с фильмами
+  render(filmCardContainer, filmCard.getElement(), RenderPosition.BEFOREEND);
+};
 
-const filmsListContainer = filmsSection.querySelector('.films-list__container');
+// функция рендера списка фильмов
+const renderFilmsList = (filmListContainer, listFilms) => {
+  const filmSection = new FilmSectionView();
+  const filmsList = new FilmsListView();
 
-for (let i = 0; i < FILMS_COUNT_STEP; i++) {
-  render(filmsListContainer, createFilmCardTpl(films[i]));
-}
+  render(filmListContainer, filmSection.getElement(), RenderPosition.BEFOREEND);
 
-// рендер кнопки show more
+  if (listFilms.length === 0) {
+    render(filmListContainer, new NoFilmView().getElement(), RenderPosition.BEFOREEND);
 
-const filmsList = filmsSection.querySelector('.films-list');
+    return;
+  }
 
-if (films.length >= FILMS_COUNT_STEP) {
-  let renderedCardsCount = FILMS_COUNT_STEP;
+  render(filmSection.getElement(), filmsList.getElement(), RenderPosition.BEFOREEND);
 
-  render(filmsList, createButtonShowMoreTpl());
+  const filmsContainer = filmsList.getElement().querySelector('.films-list__container');
 
-  const loadMoreButton = filmsList.querySelector('.films-list__show-more');
+  listFilms
+    .slice(0, Math.min(films.length, FILMS_COUNT_PER_STEP))
+    .forEach((listFilm) => renderFilmCard(filmsContainer, listFilm));
 
-  loadMoreButton.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    films
-      .slice(renderedCardsCount, renderedCardsCount + FILMS_COUNT_STEP)
-      .forEach((film) => render(filmsListContainer, createFilmCardTpl(film)));
+  // рендер кнопки show more
+  if (listFilms.length >= FILMS_COUNT_PER_STEP) {
+    let renderedCardsCount = FILMS_COUNT_PER_STEP;
 
-    renderedCardsCount += FILMS_COUNT_STEP;
+    const loadMoreButton = new ButtonView();
 
-    if (renderedCardsCount >= films.length) {
-      loadMoreButton.remove();
-    }
-  });
-}
+    render(filmsList.getElement(), loadMoreButton.getElement(), RenderPosition.BEFOREEND);
 
-// отображение попапа
+    loadMoreButton.getElement().addEventListener('click', (evt) => {
+      evt.preventDefault();
 
-const siteFooter = document.querySelector('.footer');
+      listFilms
+        .slice(renderedCardsCount, renderedCardsCount + FILMS_COUNT_PER_STEP)
+        .forEach((listFilm) => renderFilmCard(filmsContainer, listFilm));
 
-filmsListContainer.addEventListener('click', (evt) => {
-  evt.preventDefault();
+      renderedCardsCount += FILMS_COUNT_PER_STEP;
 
-  if (!document.querySelector('.film-details') && (evt.target.classList.contains('film-card__poster') || evt.target.classList.contains('film-card__title') || evt.target.classList.contains('film-card__comments'))) {
-
-    render(siteFooter, createFilmDetailsTpl(films[0]), 'afterend');
-
-    const popup = document.querySelector('.film-details');
-    const buttonClosePopup = popup.querySelector('.film-details__close-btn');
-
-    const ESC = 27;
-
-    buttonClosePopup.addEventListener('click', () => {
-      popup.remove();
-    });
-
-    document.addEventListener('keydown', ({keyCode}) => {
-      if (keyCode === ESC) {
-        popup.remove();
+      if (renderedCardsCount >= listFilms.length) {
+        loadMoreButton.getElement().remove();
+        loadMoreButton.removeElement();
       }
     });
-
   }
-});
+};
+
+// рендер профиля пользователя
+render(siteHeader, new ProfileView().getElement(), RenderPosition.BEFOREEND);
+
+// рендер навигации
+renderNavMenu(siteMain, filter);
+
+
+// рендер сортировки
+render(siteMain, new SortView().getElement(), RenderPosition.BEFOREEND);
+
+// рендер списка фильмов
+renderFilmsList(siteMain, films);
