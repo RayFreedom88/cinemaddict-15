@@ -15,8 +15,9 @@ import FilmCardView from './view/film-card.js';
 import FilmDetailsView from './view/film-details.js';
 import ButtonView from './view/button.js';
 
-// импорт утилиты
-import {RenderPosition, render, isEscEvent} from './utils.js';
+// импорт утилит
+import {RenderPosition, render} from './utils/render.js';
+import {isEscEvent} from './utils/common.js';
 
 const FILMS_COUNT_PER_STEP = 5;
 const FILMS_COUNT = 15;
