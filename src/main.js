@@ -16,7 +16,7 @@ import FilmDetailsView from './view/film-details.js';
 import ButtonView from './view/button.js';
 
 // импорт утилиты
-import {render, RenderPosition} from './utils.js';
+import {RenderPosition, render, isEscEvent} from './utils.js';
 
 const FILMS_COUNT_PER_STEP = 5;
 const FILMS_COUNT = 15;
@@ -55,21 +55,21 @@ const renderFilmCard = (filmCardContainer, film) => {
   const filmCard = new FilmCardView(film);
   const filmDetails = new FilmDetailsView(film);
 
-  // слушатель на ESC
-  const escKeyDownHandler = (evt, action) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-
-      action();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-  };
-
   const closePopup = () => {
     body.removeChild(filmDetails.getElement());
     body.classList.remove('hide-overflow');
 
     filmDetails.getElement().querySelector('.film-details__close-btn').removeEventListener('click', closePopup);
+    // eslint-disable-next-line no-use-before-define
+    document.removeEventListener('keydown', popupEscKeyDownHandler);
+  };
+
+  const popupEscKeyDownHandler = (evt) => {
+    evt.preventDefault();
+
+    if (isEscEvent(evt)) {
+      closePopup();
+    }
   };
 
   const openPopup = () => {
@@ -78,9 +78,7 @@ const renderFilmCard = (filmCardContainer, film) => {
 
     filmDetails.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
 
-    document.addEventListener('keydown', (evt)=> {
-      escKeyDownHandler(evt, closePopup);
-    });
+    document.addEventListener('keydown', popupEscKeyDownHandler);
   };
 
   filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
