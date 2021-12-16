@@ -16,7 +16,7 @@ import FilmDetailsView from './view/film-details.js';
 import ButtonView from './view/button.js';
 
 // импорт утилит
-import {render} from './utils/render.js';
+import {render, remove} from './utils/render.js';
 import {isEscEvent} from './utils/common.js';
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -124,8 +124,7 @@ const renderFilmsList = (filmListContainer, listFilms) => {
       renderedCardsCount += FILMS_COUNT_PER_STEP;
 
       if (renderedCardsCount >= listFilms.length) {
-        showMoreButton.getElement().remove();
-        showMoreButton.removeElement();
+        remove(showMoreButton);
       }
     });
   }
