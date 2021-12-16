@@ -16,7 +16,7 @@ import FilmDetailsView from './view/film-details.js';
 import ButtonView from './view/button.js';
 
 // импорт утилит
-import {RenderPosition, render} from './utils/render.js';
+import {render} from './utils/render.js';
 import {isEscEvent} from './utils/common.js';
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -33,7 +33,7 @@ const siteMain = document.querySelector('.main');
 const renderNavMenu = (navMenuContainer, navMenuFilter) => {
   const navMenu = new NavMenuView(navMenuFilter);
 
-  render(navMenuContainer, navMenu, RenderPosition.BEFOREEND);
+  render(navMenuContainer, navMenu);
 
   const filterItems = document.querySelectorAll('.main-navigation__item');
   const filterItemClassActive = 'main-navigation__item--active';
@@ -84,7 +84,7 @@ const renderFilmCard = (filmCardContainer, film) => {
   filmCardComponent.setClickHandler(openPopup);
 
 
-  render(filmCardContainer, filmCardComponent, RenderPosition.BEFOREEND);
+  render(filmCardContainer, filmCardComponent);
 };
 
 // функция рендера списка фильмов
@@ -92,15 +92,15 @@ const renderFilmsList = (filmListContainer, listFilms) => {
   const filmSectionComponent = new FilmSectionView();
   const filmsListComponent = new FilmsListView();
 
-  render(filmListContainer, filmSectionComponent, RenderPosition.BEFOREEND);
+  render(filmListContainer, filmSectionComponent);
 
   if (listFilms.length === 0) {
-    render(filmListContainer, new NoFilmView(), RenderPosition.BEFOREEND);
+    render(filmListContainer, new NoFilmView());
 
     return;
   }
 
-  render(filmSectionComponent, filmsListComponent, RenderPosition.BEFOREEND);
+  render(filmSectionComponent, filmsListComponent);
 
   const filmsContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
@@ -114,7 +114,7 @@ const renderFilmsList = (filmListContainer, listFilms) => {
 
     const showMoreButton = new ButtonView();
 
-    render(filmsListComponent, showMoreButton, RenderPosition.BEFOREEND);
+    render(filmsListComponent, showMoreButton);
 
     showMoreButton.setClickHandler(() => {
       listFilms
@@ -132,14 +132,14 @@ const renderFilmsList = (filmListContainer, listFilms) => {
 };
 
 // рендер профиля пользователя
-render(siteHeader, new ProfileView(), RenderPosition.BEFOREEND);
+render(siteHeader, new ProfileView());
 
 // рендер навигации
 renderNavMenu(siteMain, filter);
 
 
 // рендер сортировки
-render(siteMain, new SortView(), RenderPosition.BEFOREEND);
+render(siteMain, new SortView());
 
 // рендер списка фильмов
 renderFilmsList(siteMain, films);
