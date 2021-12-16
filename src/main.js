@@ -33,7 +33,7 @@ const siteMain = document.querySelector('.main');
 const renderNavMenu = (navMenuContainer, navMenuFilter) => {
   const navMenu = new NavMenuView(navMenuFilter);
 
-  render(navMenuContainer, navMenu.getElement(), RenderPosition.BEFOREEND);
+  render(navMenuContainer, navMenu, RenderPosition.BEFOREEND);
 
   const filterItems = document.querySelectorAll('.main-navigation__item');
   const filterItemClassActive = 'main-navigation__item--active';
@@ -84,25 +84,25 @@ const renderFilmCard = (filmCardContainer, film) => {
   filmCardComponent.setClickHandler(openPopup);
 
 
-  render(filmCardContainer, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmCardContainer, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
 // функция рендера списка фильмов
 const renderFilmsList = (filmListContainer, listFilms) => {
-  const filmSection = new FilmSectionView();
-  const filmsList = new FilmsListView();
+  const filmSectionComponent = new FilmSectionView();
+  const filmsListComponent = new FilmsListView();
 
-  render(filmListContainer, filmSection.getElement(), RenderPosition.BEFOREEND);
+  render(filmListContainer, filmSectionComponent, RenderPosition.BEFOREEND);
 
   if (listFilms.length === 0) {
-    render(filmListContainer, new NoFilmView().getElement(), RenderPosition.BEFOREEND);
+    render(filmListContainer, new NoFilmView(), RenderPosition.BEFOREEND);
 
     return;
   }
 
-  render(filmSection.getElement(), filmsList.getElement(), RenderPosition.BEFOREEND);
+  render(filmSectionComponent, filmsListComponent, RenderPosition.BEFOREEND);
 
-  const filmsContainer = filmsList.getElement().querySelector('.films-list__container');
+  const filmsContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
   listFilms
     .slice(0, Math.min(films.length, FILMS_COUNT_PER_STEP))
@@ -114,7 +114,7 @@ const renderFilmsList = (filmListContainer, listFilms) => {
 
     const showMoreButton = new ButtonView();
 
-    render(filmsList.getElement(), showMoreButton.getElement(), RenderPosition.BEFOREEND);
+    render(filmsListComponent, showMoreButton, RenderPosition.BEFOREEND);
 
     showMoreButton.setClickHandler(() => {
       listFilms
@@ -132,14 +132,14 @@ const renderFilmsList = (filmListContainer, listFilms) => {
 };
 
 // рендер профиля пользователя
-render(siteHeader, new ProfileView().getElement(), RenderPosition.BEFOREEND);
+render(siteHeader, new ProfileView(), RenderPosition.BEFOREEND);
 
 // рендер навигации
 renderNavMenu(siteMain, filter);
 
 
 // рендер сортировки
-render(siteMain, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(siteMain, new SortView(), RenderPosition.BEFOREEND);
 
 // рендер списка фильмов
 renderFilmsList(siteMain, films);
