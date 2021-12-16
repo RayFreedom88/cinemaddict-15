@@ -52,40 +52,38 @@ const renderNavMenu = (navMenuContainer, navMenuFilter) => {
 
 // функция рендера карточки фильма
 const renderFilmCard = (filmCardContainer, film) => {
-  const filmCard = new FilmCardView(film);
-  const filmDetails = new FilmDetailsView(film);
+  const filmCardComponent = new FilmCardView(film);
+  const filmDetailsComponent = new FilmDetailsView(film);
 
   const closePopup = () => {
-    body.removeChild(filmDetails.getElement());
+    body.removeChild(filmDetailsComponent.getElement());
     body.classList.remove('hide-overflow');
 
-    filmDetails.getElement().querySelector('.film-details__close-btn').removeEventListener('click', closePopup);
+    filmDetailsComponent.getElement().querySelector('.film-details__close-btn').removeEventListener('click', closePopup);
     // eslint-disable-next-line no-use-before-define
     document.removeEventListener('keydown', popupEscKeyDownHandler);
   };
 
   const popupEscKeyDownHandler = (evt) => {
-    evt.preventDefault();
-
     if (isEscEvent(evt)) {
       closePopup();
     }
   };
 
   const openPopup = () => {
-    body.appendChild(filmDetails.getElement());
+    body.appendChild(filmDetailsComponent.getElement());
     body.classList.add('hide-overflow');
 
-    filmDetails.getElement().querySelector('.film-details__close-btn').addEventListener('click', closePopup);
-
+    filmDetailsComponent.setClickHandler(closePopup);
     document.addEventListener('keydown', popupEscKeyDownHandler);
   };
 
-  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
-  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', openPopup);
-  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', openPopup);
+  filmCardComponent.setClickHandler(openPopup);
+  filmCardComponent.setClickHandler(openPopup);
+  filmCardComponent.setClickHandler(openPopup);
 
-  render(filmCardContainer, filmCard.getElement(), RenderPosition.BEFOREEND);
+
+  render(filmCardContainer, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 // функция рендера списка фильмов
@@ -113,13 +111,11 @@ const renderFilmsList = (filmListContainer, listFilms) => {
   if (listFilms.length >= FILMS_COUNT_PER_STEP) {
     let renderedCardsCount = FILMS_COUNT_PER_STEP;
 
-    const loadMoreButton = new ButtonView();
+    const showMoreButton = new ButtonView();
 
-    render(filmsList.getElement(), loadMoreButton.getElement(), RenderPosition.BEFOREEND);
+    render(filmsList.getElement(), showMoreButton.getElement(), RenderPosition.BEFOREEND);
 
-    loadMoreButton.getElement().addEventListener('click', (evt) => {
-      evt.preventDefault();
-
+    showMoreButton.setClickHandler(() => {
       listFilms
         .slice(renderedCardsCount, renderedCardsCount + FILMS_COUNT_PER_STEP)
         .forEach((listFilm) => renderFilmCard(filmsContainer, listFilm));
@@ -127,8 +123,8 @@ const renderFilmsList = (filmListContainer, listFilms) => {
       renderedCardsCount += FILMS_COUNT_PER_STEP;
 
       if (renderedCardsCount >= listFilms.length) {
-        loadMoreButton.getElement().remove();
-        loadMoreButton.removeElement();
+        showMoreButton.getElement().remove();
+        showMoreButton.removeElement();
       }
     });
   }
