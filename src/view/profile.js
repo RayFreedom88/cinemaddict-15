@@ -1,5 +1,5 @@
 
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createProfileTpl = () => (
   `<section class="header__profile profile">
@@ -8,24 +8,8 @@ const createProfileTpl = () => (
     </section>`
 );
 
-export default class Profile {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Profile extends AbstractView {
   getTemplate() {
     return createProfileTpl();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
