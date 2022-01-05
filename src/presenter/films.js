@@ -5,7 +5,7 @@ import NoFilmView from '../view/no-film.js';
 import FilmsListView from '../view/film-list.js';
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
-import ButtonView from '../view/button.js';
+import ShowMoreButtonView from '../view/show-more-button.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
 
@@ -21,7 +21,9 @@ export default class Films {
     this._noFilmComponent = new NoFilmView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainer = this._filmsListComponent.getElement().querySelector('.films-list__container');
-    this._buttonComponent = new ButtonView();
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(films) {
@@ -79,22 +81,37 @@ export default class Films {
       .forEach((film) => this._renderFilmCard(film));
   }
 
-  _renderShowMoreButton() {
-    let renderedCardsCount = this._renderedFilmCount;
-    const showMoreButton = this._buttonComponent;
+  _handleShowMoreButtonClick() {
+    this._renderFilmCards(this._renderedFilmCount, this._renderedFilmCount + FILMS_COUNT_PER_STEP);
+    this._renderedFilmCount += FILMS_COUNT_PER_STEP;
 
-    render(this._filmsListComponent, showMoreButton);
-
-    showMoreButton.setClickHandler(() => {
-      this._renderFilmCards(renderedCardsCount, renderedCardsCount + FILMS_COUNT_PER_STEP);
-
-      renderedCardsCount += FILMS_COUNT_PER_STEP;
-
-      if (renderedCardsCount >= this._films.length) {
-        remove(showMoreButton);
-      }
-    });
+    if (this._renderedFilmCount >= this._films.length) {
+      remove(this._showMoreButtonComponent);
+    }
   }
+
+  _renderShowMoreButton() {
+    render(this._filmsListComponent, this._showMoreButtonComponent);
+
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+  }
+
+  // _renderShowMoreButton() {
+  //   let renderedCardsCount = this._renderedFilmCount;
+  //   const showMoreButton = this._showMoreButtonComponent;
+
+  //   render(this._filmsListComponent, showMoreButton);
+
+  //   showMoreButton.setClickHandler(() => {
+  //     this._renderFilmCards(renderedCardsCount, renderedCardsCount + FILMS_COUNT_PER_STEP);
+
+  //     renderedCardsCount += FILMS_COUNT_PER_STEP;
+
+  //     if (renderedCardsCount >= this._films.length) {
+  //       remove(showMoreButton);
+  //     }
+  //   });
+  // }
 
   _renderFilmsList() {
     if (this._films.length === 0) {
