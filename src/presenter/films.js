@@ -96,23 +96,6 @@ export default class Films {
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
-  // _renderShowMoreButton() {
-  //   let renderedCardsCount = this._renderedFilmCount;
-  //   const showMoreButton = this._showMoreButtonComponent;
-
-  //   render(this._filmsListComponent, showMoreButton);
-
-  //   showMoreButton.setClickHandler(() => {
-  //     this._renderFilmCards(renderedCardsCount, renderedCardsCount + FILMS_COUNT_PER_STEP);
-
-  //     renderedCardsCount += FILMS_COUNT_PER_STEP;
-
-  //     if (renderedCardsCount >= this._films.length) {
-  //       remove(showMoreButton);
-  //     }
-  //   });
-  // }
-
   _renderFilmsList() {
     if (this._films.length === 0) {
       this._renderNoFilm();
