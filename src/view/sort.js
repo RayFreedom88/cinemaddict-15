@@ -34,6 +34,13 @@ export default class Sort extends AbstractView {
     }
 
     evt.preventDefault();
+    const sortItems =  this.getElement().querySelectorAll('.sort__button');
+
+    sortItems.forEach((button) => {
+      const sortItem = evt.target.closest('.sort__button');
+      button.classList.toggle('sort__button--active', button === sortItem);
+    });
+
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
