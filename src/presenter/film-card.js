@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
-import {render} from '../utils/render';
-import {isEscEvent} from '../utils/common';
+import { render } from '../utils/render';
+import { isEscEvent } from '../utils/common';
 
 export default class FilmCard {
   constructor(filmContainer) {

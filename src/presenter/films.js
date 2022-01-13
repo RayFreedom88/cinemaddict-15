@@ -5,10 +5,10 @@ import NoFilmView from '../view/no-film.js';
 import FilmsListView from '../view/film-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmCardPresenter from './film-card.js';
-import {render, remove, RenderPosition} from '../utils/render.js';
-// import {updateItem} from '../utils/common';
-import {SortType} from '../utils/const.js';
-import {sortByDate, sortByRating} from '../utils/common';
+import { render, remove, RenderPosition } from '../utils/render.js';
+// import { updateItem } from '../utils/common';
+import { SortType } from '../utils/const.js';
+import { sortByDate, sortByRating } from '../utils/common';
 
 const FILMS_COUNT_PER_STEP = 5;
 
