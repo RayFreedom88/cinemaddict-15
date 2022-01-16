@@ -22,7 +22,7 @@ export default class FilmCard {
     this._filmCardComponent = new FilmCardView(film);
     this._filmDetailsComponent = new FilmDetailsView(film);
 
-    this._filmCardComponent.setClickHandler(this._handleFilmClick);
+    this._filmCardComponent.setOpenFilmDetailsClickHandler(this._handleFilmClick);
     this._filmDetailsComponent.setClickHandler(this._handleFilmDetailsCloseClick);
 
     render(this._filmContainer, this._filmCardComponent);

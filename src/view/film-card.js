@@ -55,22 +55,60 @@ export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
-    this._clickHandler = this._clickHandler.bind(this);
+
+    this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
+    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+    this._favouriteClickHandler = this._favouriteClickHandler.bind(this);
+
+    this._openFilmDetailsClickHandler = this._openFilmDetailsClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTpl(this._film);
   }
 
-  _clickHandler(evt) {
+  _openFilmDetailsClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  setClickHandler(callback) {
+  _addToWatchListClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchListClick();
+  }
+
+  _markAsWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback._markAsWatchedClick();
+  }
+
+  _favouriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback._favouriteClick();
+  }
+
+  setAddToWatchListClickHandler(callback) {
+    this._callback.addToWatchListClick = callback;
+
+    this.getElement().querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this._addToWatchListClickHandler);
+  }
+
+  setMarkAsWatchedClickHandler(callback) {
+    this._callback._markAsWatchedClick = callback;
+
+    this.getElement().querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this._markAsWatchedClickHandler);
+  }
+
+  setFavouriteClickHandler(callback) {
+    this._callback._favouriteClick = callback;
+
+    this.getElement().querySelector('.film-card__controls-item--favorite').addEventListener('click', this._favouriteClickHandler);
+  }
+
+  setOpenFilmDetailsClickHandler(callback) {
     this._callback.editClick = callback;
-    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._clickHandler);
-    this.getElement().querySelector('.film-card__title').addEventListener('click', this._clickHandler);
-    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._clickHandler);
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._openFilmDetailsClickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._openFilmDetailsClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._openFilmDetailsClickHandler);
   }
 }
