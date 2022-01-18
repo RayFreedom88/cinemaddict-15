@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 // Функция для генерации случайного числа, взята из интернета
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -142,7 +143,7 @@ const authorsComment = [
 ];
 
 const getComments = () => ({
-  id: getRandom(1, 20),
+  id: nanoid(),
   text: getRandomIndex(COMMENTS),
   emotion: getRandomIndex(emotions),
   author: getRandomIndex(authorsComment),

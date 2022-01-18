@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
-import { render } from '../utils/render';
+import { render, remove, replace } from '../utils/render';
 import { isEscEvent } from '../utils/common';
 
 export default class FilmCard {
@@ -19,13 +19,35 @@ export default class FilmCard {
   init(film) {
     this._film = film;
 
+    const prevFilmCardComponent = this._filmCardComponent;
+    const prevFilmDetailsComponent = this._filmDetailsComponent;
+
     this._filmCardComponent = new FilmCardView(film);
     this._filmDetailsComponent = new FilmDetailsView(film);
 
     this._filmCardComponent.setOpenFilmDetailsClickHandler(this._handleFilmClick);
     this._filmDetailsComponent.setClickHandler(this._handleFilmDetailsCloseClick);
 
-    render(this._filmContainer, this._filmCardComponent);
+    if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
+      render(this._filmContainer, this._filmCardComponent);
+      return;
+    }
+
+    if (this._taskListContainer.getElement().contains(prevFilmCardComponent.getElement())) {
+      replace(this._filmCardComponent, prevFilmCardComponent);
+    }
+
+    if (this._taskListContainer.getElement().contains(prevFilmDetailsComponent.getElement())) {
+      replace(this._filmDetailsComponent, prevFilmDetailsComponent);
+    }
+
+    remove(prevFilmCardComponent);
+    remove(prevFilmDetailsComponent);
+  }
+
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmDetailsComponent);
   }
 
   _openFilmDetails() {
