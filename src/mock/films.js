@@ -163,7 +163,7 @@ export const generateFilms = () => {
   const comments = new  Array(getRandom(0, 5)).fill().map(() => getComments());
 
   return {
-    id: getRandom(1, 20),
+    id: nanoid(),
     poster: getRandomIndex(posters),
     ageRating: getRandom(6,18),
     title: getRandomIndex(titles),
