@@ -10,7 +10,7 @@ const createFilmCardTpl = (film) => {
     runtime,
     genres,
     description,
-    totalComments,
+    comments,
     isWatchlist,
     isHistory,
     isFavorite,
@@ -41,7 +41,7 @@ const createFilmCardTpl = (film) => {
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">
         <p class="film-card__description">${description}</p>
-        <a class="film-card__comments">${totalComments} comments</a>
+        <a class="film-card__comments">${comments.length} comments</a>
         <div class="film-card__controls">
           <button class="film-card__controls-item ${watchlistClassName}" type="button">Add to watchlist</button>
           <button class="film-card__controls-item ${historyClassName}" type="button">Mark as watched</button>
@@ -99,7 +99,7 @@ export default class FilmCard extends AbstractView {
     this.getElement().querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this._markAsWatchedClickHandler);
   }
 
-  setFavouriteClickHandler(callback) {
+  setFavoriteClickHandler(callback) {
     this._callback._favouriteClick = callback;
 
     this.getElement().querySelector('.film-card__controls-item--favorite').addEventListener('click', this._favouriteClickHandler);

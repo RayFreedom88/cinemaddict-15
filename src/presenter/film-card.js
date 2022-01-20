@@ -4,9 +4,10 @@ import { render, remove, replace } from '../utils/render';
 import { isEscEvent } from '../utils/common';
 
 export default class FilmCard {
-  constructor(filmContainer) {
+  constructor(filmContainer, changeData) {
     this._body = document.querySelector('body');
     this._filmContainer = filmContainer;
+    this._changeData = changeData;
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
@@ -14,6 +15,10 @@ export default class FilmCard {
     this._handleFilmClick = this._handleFilmClick.bind(this);
     this._handleFilmDetailsCloseClick = this._handleFilmDetailsCloseClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+
+    this._handleToWatchListClick = this._handleToWatchListClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
   }
 
   init(film) {
@@ -28,16 +33,24 @@ export default class FilmCard {
     this._filmCardComponent.setOpenFilmDetailsClickHandler(this._handleFilmClick);
     this._filmDetailsComponent.setClickHandler(this._handleFilmDetailsCloseClick);
 
+    this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmCardComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
+    this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+
+    this._filmDetailsComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
+    this._filmDetailsComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmDetailsComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+
     if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
       render(this._filmContainer, this._filmCardComponent);
       return;
     }
 
-    if (this._taskListContainer.getElement().contains(prevFilmCardComponent.getElement())) {
+    if (this._filmContainer.contains(prevFilmCardComponent.getElement())) {
       replace(this._filmCardComponent, prevFilmCardComponent);
     }
 
-    if (this._taskListContainer.getElement().contains(prevFilmDetailsComponent.getElement())) {
+    if (this._filmContainer.contains(prevFilmDetailsComponent.getElement())) {
       replace(this._filmDetailsComponent, prevFilmDetailsComponent);
     }
 
@@ -80,5 +93,41 @@ export default class FilmCard {
 
   _handleFilmDetailsCloseClick() {
     this._closeFilmDetails();
+  }
+
+  _handleToWatchListClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isWatchlist: !this._film.isWatchlist,
+        },
+      ),
+    );
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isFavorite: !this._film.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleMarkAsWatchedClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isHistory: !this._film.isHistory,
+        },
+      ),
+    );
   }
 }

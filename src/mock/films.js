@@ -150,12 +150,6 @@ const getComments = () => ({
   commentDate: dayjs().format('YYYY/MM/DD HH:mm'),
 });
 
-const getArrayCommentsId = (array) => {
-  const arrayCommentsId = [];
-  array.forEach((element) => arrayCommentsId.push(element.id));
-  return arrayCommentsId;
-};
-
 export const generateFilms = () => {
   const actors = new Array(getRandom(2, 6)).fill().map(() => getRandomIndex(arrayActors));
   const writers = new Array(getRandom(1, 3)).fill().map(() => getRandomIndex(arrayWriters));
@@ -164,10 +158,11 @@ export const generateFilms = () => {
 
   return {
     id: nanoid(),
-    poster: getRandomIndex(posters),
-    ageRating: getRandom(6,18),
+    comments,
     title: getRandomIndex(titles),
     originalTitle: getRandomIndex(titles),
+    poster: getRandomIndex(posters),
+    ageRating: `${getRandom(6,18)}`,
     rating: getRating(1, 10),
     director: getRandomIndex(directors),
     writers,
@@ -177,9 +172,6 @@ export const generateFilms = () => {
     releaseCountry: getRandomIndex(countries),
     genres,
     description: getRandomIndex(descriptions),
-    comments,
-    commentsId: getArrayCommentsId(comments),
-    totalComments: comments.length,
     isWatchlist: Boolean(getRandom(0, 1)),
     isHistory: Boolean(getRandom(0, 1)),
     isFavorite: Boolean(getRandom(0, 1)),

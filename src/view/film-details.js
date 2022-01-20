@@ -47,7 +47,6 @@ const createFilmDetailsTpl = (film) => {
     genres,
     description,
     comments,
-    totalComments,
     isWatchlist,
     isHistory,
     isFavorite,
@@ -153,7 +152,7 @@ const createFilmDetailsTpl = (film) => {
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${totalComments}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
             <ul class="film-details__comments-list">
               ${getComment(comments).join('')}
             </ul>
@@ -197,16 +196,51 @@ export default class FilmDetails extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
     this._clickHandler = this._clickHandler.bind(this);
+
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._toWatchListClickHandler = this._toWatchListClickHandler.bind(this);
+    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsTpl(this._film);
   }
 
+  _toWatchListClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.toWatchListClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _markAsWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.markAsWatchedClick();
+  }
+
   _clickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
+  }
+
+  setAddToWatchListClickHandler(callback) {
+    this._callback.toWatchListClick = callback;
+    this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._toWatchListClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setMarkAsWatchedClickHandler(callback) {
+    this._callback.markAsWatchedClick = callback;
+    this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._markAsWatchedClickHandler);
   }
 
   setClickHandler(callback) {

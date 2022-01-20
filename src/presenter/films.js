@@ -5,8 +5,8 @@ import NoFilmView from '../view/no-film.js';
 import FilmsListView from '../view/film-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmCardPresenter from './film-card.js';
+import { updateItem } from '../utils/common';
 import { render, remove, RenderPosition } from '../utils/render.js';
-// import { updateItem } from '../utils/common';
 import { SortType } from '../utils/const.js';
 import { sortByDate, sortByRating } from '../utils/common';
 
@@ -28,6 +28,7 @@ export default class Films {
 
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
+    this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -39,6 +40,11 @@ export default class Films {
     render(this._filmsContainer, this._filmSectionComponent);
 
     this._renderFilms();
+  }
+
+  _handleFilmChange(updatedFilm) {
+    this._films = updateItem(this._films, updatedFilm);
+    this._filmPresenter.get(updatedFilm.id).init(updatedFilm);
   }
 
   _sortFilms(sortType) {
@@ -76,11 +82,10 @@ export default class Films {
   }
 
   _renderFilmCard(cardFilm, filmPlace = this._filmsListContainer) {
-    const filmCardPresenter = new FilmCardPresenter(filmPlace);
+    const filmCardPresenter = new FilmCardPresenter(filmPlace, this._handleFilmChange);
     filmCardPresenter.init(cardFilm);
 
     this._filmPresenter.set(cardFilm.id, filmCardPresenter);
-    // console.log(this._filmPresenter.set(cardFilm.id, filmCardPresenter));
   }
 
   _renderFilmCards(from, to) {
