@@ -1,13 +1,13 @@
 // импорты моковых данных
-import {generateFilms} from './mock/films.js';
-import {generateFilters} from './mock/filter.js';
+import { generateFilms } from './mock/films.js';
+import { generateFilters } from './mock/filter.js';
 // импорты компонентов
 import ProfileView from './view/profile.js';
 import NavMenuView from './view/nav-menu.js';
 
 import FilmsPresenter from './presenter/films.js';
 // импорт утилит
-import {render} from './utils/render.js';
+import { render } from './utils/render.js';
 
 const FILMS_COUNT = 15;
 

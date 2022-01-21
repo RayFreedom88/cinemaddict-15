@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 // Функция для генерации случайного числа, взята из интернета
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -142,18 +143,12 @@ const authorsComment = [
 ];
 
 const getComments = () => ({
-  id: getRandom(1, 20),
+  id: nanoid(),
   text: getRandomIndex(COMMENTS),
   emotion: getRandomIndex(emotions),
   author: getRandomIndex(authorsComment),
   commentDate: dayjs().format('YYYY/MM/DD HH:mm'),
 });
-
-const getArrayCommentsId = (array) => {
-  const arrayCommentsId = [];
-  array.forEach((element) => arrayCommentsId.push(element.id));
-  return arrayCommentsId;
-};
 
 export const generateFilms = () => {
   const actors = new Array(getRandom(2, 6)).fill().map(() => getRandomIndex(arrayActors));
@@ -162,11 +157,12 @@ export const generateFilms = () => {
   const comments = new  Array(getRandom(0, 5)).fill().map(() => getComments());
 
   return {
-    id: getRandom(1, 20),
-    poster: getRandomIndex(posters),
-    ageRating: getRandom(6,18),
+    id: nanoid(),
+    comments,
     title: getRandomIndex(titles),
     originalTitle: getRandomIndex(titles),
+    poster: getRandomIndex(posters),
+    ageRating: `${getRandom(6,18)}`,
     rating: getRating(1, 10),
     director: getRandomIndex(directors),
     writers,
@@ -176,9 +172,6 @@ export const generateFilms = () => {
     releaseCountry: getRandomIndex(countries),
     genres,
     description: getRandomIndex(descriptions),
-    comments,
-    commentsId: getArrayCommentsId(comments),
-    totalComments: comments.length,
     isWatchlist: Boolean(getRandom(0, 1)),
     isHistory: Boolean(getRandom(0, 1)),
     isFavorite: Boolean(getRandom(0, 1)),
