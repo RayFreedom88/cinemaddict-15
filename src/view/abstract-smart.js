@@ -32,10 +32,10 @@ export default class Smart extends AbstractView {
     parent.replaceChild(newElement, prevElement);
 
     this.getElement().scrollTop = scrollPosition;
-    this.restoreHandlers();
+    this.recoveryHandlers();
   }
 
-  restoreHandlers() {
+  recoveryHandlers() {
     throw new Error('Abstract method not implemented: resetHandlers');
   }
 }

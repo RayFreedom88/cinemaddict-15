@@ -153,38 +153,10 @@ const createFilmDetailsTpl = (film) => {
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+
             <ul class="film-details__comments-list">
               ${getComment(comments).join('')}
             </ul>
-
-            <div class="film-details__new-comment">
-              <div class="film-details__add-emoji-label"></div>
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-                <label class="film-details__emoji-label" for="emoji-smile">
-                  <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-                <label class="film-details__emoji-label" for="emoji-sleeping">
-                  <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-                <label class="film-details__emoji-label" for="emoji-puke">
-                  <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-                <label class="film-details__emoji-label" for="emoji-angry">
-                  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                </label>
-              </div>
-            </div>
           </section>
         </div>
       </form>
@@ -197,11 +169,11 @@ export default class FilmDetails extends AbstractView {
     super();
     this._film = film;
 
-    this._clickHandler = this._clickHandler.bind(this);
-
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._toWatchListClickHandler = this._toWatchListClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+
+    this._closeFilmDetailsClickHandler = this._closeFilmDetailsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -223,9 +195,9 @@ export default class FilmDetails extends AbstractView {
     this._callback.markAsWatchedClick();
   }
 
-  _clickHandler(evt) {
+  _closeFilmDetailsClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.closeFilmDetailsClick();
   }
 
   setAddToWatchListClickHandler(callback) {
@@ -243,8 +215,8 @@ export default class FilmDetails extends AbstractView {
     this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._markAsWatchedClickHandler);
   }
 
-  setClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+  setCloseFilmDetailsClickHandler(callback) {
+    this._callback.closeFilmDetailsClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeFilmDetailsClickHandler);
   }
 }

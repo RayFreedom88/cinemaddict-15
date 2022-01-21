@@ -1,5 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
+import FilmDetailsNewCommentView from '../view/film-details-new-comment';
 import { render, remove, replace } from '../utils/render';
 import { isEscEvent } from '../utils/common';
 
@@ -30,8 +31,10 @@ export default class FilmCard {
     this._filmCardComponent = new FilmCardView(film);
     this._filmDetailsComponent = new FilmDetailsView(film);
 
+    const filmDetailsCommentWrap = this._filmDetailsComponent.getElement().querySelector('.film-details__comments-wrap');
+
     this._filmCardComponent.setOpenFilmDetailsClickHandler(this._handleFilmClick);
-    this._filmDetailsComponent.setClickHandler(this._handleFilmDetailsCloseClick);
+    this._filmDetailsComponent.setCloseFilmDetailsClickHandler(this._handleFilmDetailsCloseClick);
 
     this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmCardComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
@@ -40,6 +43,8 @@ export default class FilmCard {
     this._filmDetailsComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
     this._filmDetailsComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetailsComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+
+    render(filmDetailsCommentWrap, new FilmDetailsNewCommentView);
 
     if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
       render(this._filmContainer, this._filmCardComponent);
