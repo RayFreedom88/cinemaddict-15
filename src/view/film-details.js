@@ -182,41 +182,49 @@ export default class FilmDetails extends AbstractView {
 
   _toWatchListClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.toWatchListClick();
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.favoriteClick();
   }
 
   _markAsWatchedClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.markAsWatchedClick();
   }
 
   _closeFilmDetailsClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.closeFilmDetailsClick();
   }
 
   setAddToWatchListClickHandler(callback) {
     this._callback.toWatchListClick = callback;
+
     this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._toWatchListClickHandler);
   }
 
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
+
     this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
   setMarkAsWatchedClickHandler(callback) {
     this._callback.markAsWatchedClick = callback;
+
     this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._markAsWatchedClickHandler);
   }
 
   setCloseFilmDetailsClickHandler(callback) {
     this._callback.closeFilmDetailsClick = callback;
+
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeFilmDetailsClickHandler);
   }
 }
