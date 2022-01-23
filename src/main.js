@@ -1,5 +1,7 @@
 import { generateFilms } from './mock/film.js';
 
+import FilmsModel from './model/films.js';
+
 import ProfileView from './view/profile.js';
 import NavMenuView from './view/nav-menu.js';
 
@@ -11,6 +13,9 @@ const FILMS_COUNT = 15;
 
 const movieList = new Array(FILMS_COUNT).fill().map(generateFilms);
 
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(movieList);
+
 const siteHeader = document.querySelector('.header');
 const siteMain = document.querySelector('.main');
 
@@ -18,5 +23,5 @@ const siteMain = document.querySelector('.main');
 render(siteHeader, new ProfileView());
 render(siteMain, new NavMenuView(movieList));
 
-const filmsPresenter = new FilmsPresenter(siteMain);
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel);
 filmsPresenter.init(movieList);

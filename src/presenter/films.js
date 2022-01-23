@@ -14,8 +14,9 @@ import { sortByDate, sortByRating } from '../utils/common';
 const FILMS_COUNT_PER_STEP = 5;
 
 export default class Films {
-  constructor(filmsContainer) {
+  constructor(filmsContainer, filmsModel) {
     this._filmsContainer = filmsContainer;
+    this._filmsModel = filmsModel;
     this._renderedFilmCount = FILMS_COUNT_PER_STEP;
 
     this._filmPresenterMap = new Map();
@@ -40,6 +41,10 @@ export default class Films {
     render(this._filmsContainer, this._filmSectionComponent);
 
     this._renderFilms();
+  }
+
+  _getFilms() {
+    return this._filmsModel.getFilms();
   }
 
   _handleFilmChange(updatedFilm) {
