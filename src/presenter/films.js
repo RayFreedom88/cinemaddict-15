@@ -6,7 +6,6 @@ import FilmsListView from '../view/film-list';
 import ShowMoreButtonView from '../view/show-more-button';
 import FilmCardPresenter from './film-card';
 
-import { updateItem } from '../utils/common';
 import { render, remove, RenderPosition } from '../utils/render';
 import { SortType } from '../utils/const';
 import { sortByDate, sortByRating } from '../utils/common';
@@ -29,9 +28,12 @@ export default class Films {
 
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
-    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -51,10 +53,20 @@ export default class Films {
     return this._filmsModel.getFilms();
   }
 
-  _handleFilmChange(updatedFilm) {
-    // Здесь будем вызывать обновление модели
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
 
-    this._filmPresenterMap.get(updatedFilm.id).init(updatedFilm);
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть фильма
+    // - обновить фильм
+    // - обновить весь список
   }
 
   _handleSortTypeChange(sortType) {
@@ -77,7 +89,7 @@ export default class Films {
   }
 
   _renderFilmCard(cardFilm) {
-    const filmCardPresenter = new FilmCardPresenter(this._filmsListContainer, this._handleFilmChange);
+    const filmCardPresenter = new FilmCardPresenter(this._filmsListContainer, this._handleViewAction);
     filmCardPresenter.init(cardFilm);
 
     this._filmPresenterMap.set(cardFilm.id, filmCardPresenter);
