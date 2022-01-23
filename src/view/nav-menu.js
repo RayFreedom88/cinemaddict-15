@@ -1,34 +1,56 @@
 import AbstractView from './abstract.js';
 
-const createFilter = (filter) => {
-  const {name, count} = filter;
+//   const filterItems = document.querySelectorAll('.main-navigation__item');
+//   const filterItemClassActive = 'main-navigation__item--active';
 
-  return (
-    `<a href="#${name}" class="main-navigation__item">
-      ${name} <span class="main-navigation__item-count">${count}</span>
-    </a>`
-  );
-};
+//   const filterItemClickHandler = (evt) => {
+//     evt.preventDefault();
+//     filterItems.forEach((item) => {
+//       item === evt.currentTarget
+//         ? item.classList.add(filterItemClassActive)
+//         : item.classList.remove(filterItemClassActive);
+//     });
+//   };
 
-const createNavigationTpl = (filters) => {
-  const filmsFilter = filters.map((it) => createFilter(it)).join('\n');
+//   filterItems.forEach((item) => item.addEventListener('click', filterItemClickHandler));
+
+const createNavigationTpl = (movieList) => {
+  const watchlist = [];
+  const history = [];
+  const favourites = [];
+
+  movieList.forEach((movie) => {
+    if (movie.isWatchlist) {
+      watchlist.push(movie);
+    }
+    if (movie.isMarkAsWatched) {
+      history.push(movie);
+    }
+    if (movie.isFavorite) {
+      favourites.push(movie);
+    }
+  });
 
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
         <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-        ${filmsFilter}
+        <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist.length}</span></a>
+        <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${history.length}</span></a>
+        <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favourites.length}</span></a>
+      </div>
+      <a href="#stats" class="main-navigation__additional">Stats</a>
     </nav>`
   );
 };
 
 export default class NavMenu extends AbstractView {
-  constructor (filters) {
+  constructor (movieList) {
     super();
-    this._filters = filters;
+    this._movieList = movieList;
   }
 
   getTemplate () {
-    return createNavigationTpl(this._filters);
+    return createNavigationTpl(this._movieList);
   }
 }

@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
-import AbstractView from './abstract.js';
+import AbstractView from './abstract';
+import { setFormatDate } from '../utils/common';
 
 const createGenreTpl = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
@@ -8,30 +8,7 @@ const getGenre = (genres) => {
   return arrayGenre;
 };
 
-const createCommentTpl = (comment) => {
-  const {
-    text,
-    emotion,
-    author,
-    commentDate,
-  } = comment;
-
-  return `<li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
-    </span>
-    <div>
-      <p class="film-details__comment-text">${text}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${commentDate}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-    </li>`;
-};
-
-const createFilmDetailsTpl = (film) => {
+const createFilmDetailsTpl = (movie) => {
   const {
     poster,
     title,
@@ -48,24 +25,19 @@ const createFilmDetailsTpl = (film) => {
     description,
     comments,
     isWatchlist,
-    isHistory,
+    isMarkAsWatched,
     isFavorite,
-  } = film;
+  } = movie;
 
-  const date = dayjs(releaseDate).format('DD MMMM YYYY');
+  const date = setFormatDate(releaseDate, 'DD MMMM YYYY');
 
   const genresHeading = genres.length > 1 ? 'Genres' : 'Genre';
-
-  const getComment = (array) => {
-    const arrayComments = array.map((comment) => createCommentTpl(comment));
-    return arrayComments;
-  };
 
   const watchlistClassName = isWatchlist
     ? 'film-details__control-button--watchlist film-details__control-button--active'
     : 'film-details__control-button--watchlist';
 
-  const historyClassName = isHistory
+  const markAsWatchedClassName = isMarkAsWatched
     ? 'film-details__control-button--watched film-details__control-button--active'
     : 'film-details__control-button--watched';
 
@@ -145,7 +117,7 @@ const createFilmDetailsTpl = (film) => {
 
           <section class="film-details__controls">
             <button type="button" class="film-details__control-button ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-            <button type="button" class="film-details__control-button ${historyClassName}" id="watched" name="watched">Already watched</button>
+            <button type="button" class="film-details__control-button ${markAsWatchedClassName}" id="watched" name="watched">Already watched</button>
             <button type="button" class="film-details__control-button ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
           </section>
         </div>
@@ -155,7 +127,7 @@ const createFilmDetailsTpl = (film) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
-              ${getComment(comments).join('')}
+
             </ul>
           </section>
         </div>
@@ -163,24 +135,28 @@ const createFilmDetailsTpl = (film) => {
     </section>`
   );
 };
+// предыдушая реализаци добавления комментов
+/* <ul class="film-details__comments-list">
+  ${getComment(comments).join('')}
+</ul> */
 
 export default class FilmDetails extends AbstractView {
-  constructor(film) {
+  constructor(movie) {
     super();
-    this._film = film;
+    this._movie = movie;
 
+    this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._toWatchListClickHandler = this._toWatchListClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
 
     this._closeFilmDetailsClickHandler = this._closeFilmDetailsClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmDetailsTpl(this._film);
+    return createFilmDetailsTpl(this._movie);
   }
 
-  _toWatchListClickHandler(evt) {
+  _addToWatchListClickHandler(evt) {
     evt.preventDefault();
 
     this._callback.toWatchListClick();
@@ -207,7 +183,7 @@ export default class FilmDetails extends AbstractView {
   setAddToWatchListClickHandler(callback) {
     this._callback.toWatchListClick = callback;
 
-    this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._toWatchListClickHandler);
+    this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._addToWatchListClickHandler);
   }
 
   setFavoriteClickHandler(callback) {

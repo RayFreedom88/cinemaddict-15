@@ -1,22 +1,4 @@
-import dayjs from 'dayjs';
-import { nanoid } from 'nanoid';
-
-// Функция для генерации случайного числа, взята из интернета
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-
-const getRandom = function (min, max) {
-  const lower = Math.ceil(Math.min((min), (max)));
-  const upper = Math.floor(Math.max((min), (max)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
-const getRandomIndex = (array) => {
-  const randomIndex = getRandom(0, array.length -1);
-  return array[randomIndex];
-};
-
-const posters = [
+export const POSTERS = [
   'made-for-each-other.png',
   'popeye-meets-sinbad.png',
   'sagebrush-trail.jpg',
@@ -26,7 +8,7 @@ const posters = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-const titles = [
+export const TITLES = [
   'Made for Each Other',
   'Popeye the Sailor Meets Sindbad the Sailor',
   'Sagebrush Trail',
@@ -36,12 +18,7 @@ const titles = [
   'The Man with the Golden Arm',
 ];
 
-const getRating = (min, max) => {
-  const result = Math.random() * (max - min + 1) + min;
-  return result.toFixed(1);
-};
-
-const directors = [
+export const DIRECTORS = [
   'Reza Badiyi',
   'Minhal Baig',
   'Chris Bailey',
@@ -50,16 +27,7 @@ const directors = [
   'Paul Bales',
 ];
 
-const arrayWriters = [
-  'Robert Towne',
-  'Quentin Tarantino',
-  'William Goldman',
-  'Charlie Kaufman',
-  'Woody Allen',
-  'Nora Ephron',
-];
-
-const arrayActors = [
+export const ARRAY_ACTORS = [
   'Tom Hanks',
   'Woody Harrelson',
   'Tommy Lee Jones',
@@ -68,32 +36,16 @@ const arrayActors = [
   'Mel Gibson',
 ];
 
-const getRandomDate = () => {
-  const daysInterval = -15000;
-  const day = dayjs().date((getRandom(daysInterval, dayjs().date())));
-  return dayjs(day);
-};
-
-const runtimes = [
-  '1h 59m',
-  '1h 18m',
-  '1h 21m',
-  '54m',
-  '16m',
-  '1h 36m',
-  '1h 05m',
+export const ARRAY_WRITERS = [
+  'Robert Towne',
+  'Quentin Tarantino',
+  'William Goldman',
+  'Charlie Kaufman',
+  'Woody Allen',
+  'Nora Ephron',
 ];
 
-const countries = [
-  'Australia',
-  'Bosnia and Herzegovina',
-  'Cambodia',
-  'Iceland',
-  'Liechtenstein',
-  'United Kingdom',
-];
-
-const arrayGenres = [
+export const ARRAY_GENRES = [
   'Western',
   'Drama',
   'Comedy',
@@ -102,7 +54,16 @@ const arrayGenres = [
   'Mystery',
 ];
 
-const descriptions = [
+export const COUNTRIES = [
+  'Australia',
+  'Bosnia and Herzegovina',
+  'Cambodia',
+  'Iceland',
+  'Liechtenstein',
+  'United Kingdom',
+];
+
+export const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra.',
@@ -116,7 +77,17 @@ const descriptions = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-const COMMENTS = [
+export const RUNTIMES = [
+  '1h 59m',
+  '1h 18m',
+  '1h 21m',
+  '54m',
+  '16m',
+  '1h 36m',
+  '1h 05m',
+];
+
+export const COMMENTS = [
   'Невероятно романтичное кино.',
   'Фильм, который потряс до глубины души. Красивый, трогательный. При этом поучительный, особенно для детей.',
   'Двоякое чувство, вроде и получил удовольствие от просмотра, но по итогу фильм заканчивается ничем.',
@@ -125,14 +96,14 @@ const COMMENTS = [
   'Злая от просмотра, ждала фильм.такую задумку изгадить. Дешёвая камера, размытая съемка дрожащей рукой, обрезанные головы людей, коленки близким планом (да, крупный план коленок , в момент когда человек говорит). Все максимально приближено, с обрезанными кадрами. Ну неужели нельзя посмотреть в экран что в кадр попала часть головы персонала кто снизу и ее просто размазывают, вместо переснятого дубля.',
 ];
 
-const emotions = [
+export const EMOTIONS = [
   'smile',
   'sleeping',
   'puke',
   'angry',
 ];
 
-const authorsComment = [
+export const COMMENT_AUTHORS = [
   'Ilya Reilly',
   'Tom Ford',
   'Takeshi Kitano',
@@ -141,39 +112,3 @@ const authorsComment = [
   'Tuti Fruti',
   'Robert Putiatevich',
 ];
-
-const getComments = () => ({
-  id: nanoid(),
-  text: getRandomIndex(COMMENTS),
-  emotion: getRandomIndex(emotions),
-  author: getRandomIndex(authorsComment),
-  commentDate: dayjs().format('YYYY/MM/DD HH:mm'),
-});
-
-export const generateFilms = () => {
-  const actors = new Array(getRandom(2, 6)).fill().map(() => getRandomIndex(arrayActors));
-  const writers = new Array(getRandom(1, 3)).fill().map(() => getRandomIndex(arrayWriters));
-  const genres = new Array(getRandom(1,2)).fill().map(() => getRandomIndex(arrayGenres));
-  const comments = new  Array(getRandom(0, 5)).fill().map(() => getComments());
-
-  return {
-    id: nanoid(),
-    comments,
-    title: getRandomIndex(titles),
-    originalTitle: getRandomIndex(titles),
-    poster: getRandomIndex(posters),
-    ageRating: `${getRandom(6,18)}`,
-    rating: getRating(1, 10),
-    director: getRandomIndex(directors),
-    writers,
-    actors,
-    releaseDate: getRandomDate('D MMMM YYYY'),
-    runtime: getRandomIndex(runtimes),
-    releaseCountry: getRandomIndex(countries),
-    genres,
-    description: getRandomIndex(descriptions),
-    isWatchlist: Boolean(getRandom(0, 1)),
-    isHistory: Boolean(getRandom(0, 1)),
-    isFavorite: Boolean(getRandom(0, 1)),
-  };
-};
