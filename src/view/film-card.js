@@ -16,7 +16,11 @@ const createFilmCardTpl = (movie) => {
     isFavorite,
   } = movie;
 
+  const MAX_DESCRIPTION_LENGTH = 139;
+
   const year = getFormatDate(releaseDate,'YYYY');
+
+  const getFilmCardDescription = () => (description.length > MAX_DESCRIPTION_LENGTH) ? `${description.substring(0, MAX_DESCRIPTION_LENGTH)}...`: description;
 
   const watchlistClassName = isWatchlist
     ? 'film-card__controls-item--add-to-watchlist film-card__controls-item--active'
@@ -40,7 +44,7 @@ const createFilmCardTpl = (movie) => {
           <span class="film-card__genre">${genres.join(', ')}</span>
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${description}</p>
+        <p class="film-card__description">${getFilmCardDescription()}</p>
         <a class="film-card__comments">${comments.length} comments</a>
         <div class="film-card__controls">
           <button class="film-card__controls-item ${watchlistClassName}" type="button">Add to watchlist</button>
