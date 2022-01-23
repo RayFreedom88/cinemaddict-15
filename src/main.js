@@ -24,4 +24,4 @@ render(siteHeader, new ProfileView());
 render(siteMain, new NavMenuView(movieList));
 
 const filmsPresenter = new FilmsPresenter(siteMain, filmsModel);
-filmsPresenter.init(movieList);
+filmsPresenter.init();
