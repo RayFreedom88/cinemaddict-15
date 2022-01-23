@@ -77,16 +77,6 @@ export const DESCRIPTIONS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-export const RUNTIMES = [
-  '1h 59m',
-  '1h 18m',
-  '1h 21m',
-  '54m',
-  '16m',
-  '1h 36m',
-  '1h 05m',
-];
-
 export const COMMENTS = [
   'Невероятно романтичное кино.',
   'Фильм, который потряс до глубины души. Красивый, трогательный. При этом поучительный, особенно для детей.',

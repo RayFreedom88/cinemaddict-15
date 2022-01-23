@@ -1,10 +1,10 @@
 import AbstractView from './abstract';
-import { setFormatDate } from '../utils/common';
+import { getFormatDate } from '../utils/common';
 
 const createFilmDetailsCommentTpl = (comment) => {
   const {text, emotion, author, commentDate} = comment;
 
-  const date = setFormatDate(commentDate, 'YYYY/MM/DD HH:mm');
+  const date = getFormatDate(commentDate, 'YYYY/MM/DD HH:mm');
 
   return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">

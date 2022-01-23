@@ -9,7 +9,6 @@ import {
   COUNTRIES,
   ARRAY_GENRES,
   DESCRIPTIONS,
-  RUNTIMES,
   COMMENTS,
   EMOTIONS,
   COMMENT_AUTHORS
@@ -67,7 +66,7 @@ export const generateFilms = () => {
     writers,
     actors,
     releaseDate: getRandomDate('D MMMM YYYY'),
-    runtime: getRandomIndex(RUNTIMES),
+    runtime: getRandom(30, 180),
     releaseCountry: getRandomIndex(COUNTRIES),
     genres,
     description: getRandomIndex(DESCRIPTIONS),

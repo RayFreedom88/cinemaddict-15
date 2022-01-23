@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
 import AbstractView from './abstract';
+import { getFormatDate, getRuntime } from '../utils/common';
 
 const createFilmCardTpl = (movie) => {
   const {
@@ -16,7 +16,7 @@ const createFilmCardTpl = (movie) => {
     isFavorite,
   } = movie;
 
-  const year = dayjs(releaseDate).format('YYYY');
+  const year = getFormatDate(releaseDate,'YYYY');
 
   const watchlistClassName = isWatchlist
     ? 'film-card__controls-item--add-to-watchlist film-card__controls-item--active'
@@ -36,7 +36,7 @@ const createFilmCardTpl = (movie) => {
         <p class="film-card__rating">${rating}</p>
         <p class="film-card__info">
           <span class="film-card__releaseDate">${year}</span>
-          <span class="film-card__duration">${runtime}</span>
+          <span class="film-card__duration">${getRuntime(runtime)}</span>
           <span class="film-card__genre">${genres.join(', ')}</span>
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">

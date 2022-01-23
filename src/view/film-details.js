@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import { setFormatDate } from '../utils/common';
+import { getFormatDate, getRuntime } from '../utils/common';
 
 const createGenreTpl = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
@@ -29,7 +29,7 @@ const createFilmDetailsTpl = (movie) => {
     isFavorite,
   } = movie;
 
-  const date = setFormatDate(releaseDate, 'DD MMMM YYYY');
+  const date = getFormatDate(releaseDate, 'DD MMMM YYYY');
 
   const genresHeading = genres.length > 1 ? 'Genres' : 'Genre';
 
@@ -94,7 +94,7 @@ const createFilmDetailsTpl = (movie) => {
 
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${runtime}</td>
+                  <td class="film-details__cell">${getRuntime(runtime)}</td>
                 </tr>
 
                 <tr class="film-details__row">
