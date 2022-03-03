@@ -7,7 +7,7 @@ import ShowMoreButtonView from '../view/show-more-button';
 import FilmCardPresenter from './film-card';
 
 import { render, remove, RenderPosition } from '../utils/render';
-import { SortType } from '../utils/const';
+import { SortType, UpdateType, UserAction } from '../utils/const';
 import { sortByDate, sortByRating } from '../utils/common';
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -54,19 +54,33 @@ export default class Films {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    // console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+    // console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть фильма
     // - обновить фильм
     // - обновить весь список
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._filmCardPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        break;
+      case UpdateType.MAJOR:
+        break;
+    }
   }
 
   _handleSortTypeChange(sortType) {
