@@ -63,6 +63,9 @@ export default class Films {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.DELETE_COMMENT:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
     }
   }
 
@@ -93,15 +96,12 @@ export default class Films {
     }
 
     this._currentSortType = sortType;
-    // this._clearFilmList();
-    // this._renderFilmsList();
+
     this._clearFilms();
     this._renderFilms();
   }
 
   _renderSort() {
-    // render(this._filmSectionComponent, this._sortComponent, RenderPosition.BEFOREBEGIN);
-    // this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     if (this._sortComponent !== null) {
       this._sortComponent = null;
     }
@@ -127,26 +127,10 @@ export default class Films {
     films.forEach((film) => this._renderFilmCard(film));
   }
 
-  // _clearFilmList() {
-  //   this._filmPresenterMap.forEach((presenter) => presenter.destroy());
-  //   this._filmPresenterMap.clear();
-  //   this._renderedFilmCount = FILMS_COUNT_PER_STEP;
-  //   remove(this._showMoreButtonComponent);
-  // }
-
   _renderFilmsList() {
     render(this._filmSectionComponent, this._filmsListComponent);
 
     this._filmsListContainer = this._filmsListComponent.getElement().querySelector('.films-list__container');
-
-    // const filmsCount = this._getFilms().length;
-    // const films = this._getFilms().slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
-
-    // this._renderFilmCards(films);
-
-    // if (filmsCount > FILMS_COUNT_PER_STEP) {
-    //   this._renderShowMoreButton();
-    // }
   }
 
   _handleShowMoreButtonClick() {
@@ -163,9 +147,6 @@ export default class Films {
   }
 
   _renderShowMoreButton() {
-    // render(this._filmsListComponent, this._showMoreButtonComponent);
-
-    // this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
     if (this._showMoreButtonComponent !== null) {
       this._showMoreButtonComponent = null;
     }
@@ -214,15 +195,4 @@ export default class Films {
       this._renderShowMoreButton();
     }
   }
-
-  // _renderFilms() {
-  //   if (this._getFilms().length === 0) {
-  //     this._renderNoFilm();
-
-  //     return;
-  //   }
-
-  //   this._renderSort();
-  //   this._renderFilmsList();
-  // }
 }
