@@ -1,13 +1,14 @@
-import { generateFilms } from './mock/film.js';
+import { generateFilms } from './mock/film';
 
-import FilmsModel from './model/films.js';
+import FilmsModel from './model/films';
+import FilterModel from './model/filter';
 
-import ProfileView from './view/profile.js';
-import NavMenuView from './view/nav-menu.js';
+import ProfileView from './view/profile';
+import NavMenuView from './view/nav-menu';
 
-import FilmsPresenter from './presenter/films.js';
+import FilmsPresenter from './presenter/films';
 
-import { render } from './utils/render.js';
+import { render } from './utils/render';
 
 const FILMS_COUNT = 15;
 
@@ -15,6 +16,8 @@ const movieList = new Array(FILMS_COUNT).fill().map(generateFilms);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(movieList);
+
+const filterModel = new FilterModel();
 
 const siteHeader = document.querySelector('.header');
 const siteMain = document.querySelector('.main');
