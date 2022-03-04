@@ -14,30 +14,25 @@ import AbstractView from './abstract.js';
 
 //   filterItems.forEach((item) => item.addEventListener('click', filterItemClickHandler));
 
-const createNavigationTpl = (movieList) => {
-  const watchlist = [];
-  const history = [];
-  const favourites = [];
+const createFilterTpl = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
+  return `<a
+    href="#${type}"
+    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    title="${type}">
+      ${name}${type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : ''}
+  </a>`;
+};
 
-  movieList.forEach((movie) => {
-    if (movie.isWatchlist) {
-      watchlist.push(movie);
-    }
-    if (movie.isMarkAsWatched) {
-      history.push(movie);
-    }
-    if (movie.isFavorite) {
-      favourites.push(movie);
-    }
-  });
+const createNavigationTpl = (filterList, currentFilterType) => {
+  const filterListTpl = filterList
+    .map((filter) => createFilterTpl(filter, currentFilterType))
+    .join('');
 
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
-        <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-        <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist.length}</span></a>
-        <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${history.length}</span></a>
-        <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favourites.length}</span></a>
+        ${filterListTpl}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
     </nav>`
@@ -45,12 +40,25 @@ const createNavigationTpl = (movieList) => {
 };
 
 export default class NavMenu extends AbstractView {
-  constructor (movieList) {
+  constructor (filters, currentFilterType) {
     super();
-    this._movieList = movieList;
+    this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterClickHandler = this._filterClickHandler.bind(this);
   }
 
   getTemplate () {
-    return createNavigationTpl(this._movieList);
+    return createNavigationTpl(this._filters, this._currentFilter);
+  }
+
+  _filterClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.filterClick(evt.target.title);
+  }
+
+  setFilterClickHandler(callback) {
+    this._callback.filterClick = callback;
+    this.getElement().querySelectorAll('.main-navigation__item').addEventListener('click', this._filterClickHandler);
   }
 }

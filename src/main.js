@@ -14,6 +14,14 @@ const FILMS_COUNT = 15;
 
 const movieList = new Array(FILMS_COUNT).fill().map(generateFilms);
 
+const filters = [
+  {
+    type: 'all',
+    name: 'All movies',
+    count: 0,
+  },
+];
+
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(movieList);
 
@@ -24,7 +32,7 @@ const siteMain = document.querySelector('.main');
 
 // рендер профиля, нафигации
 render(siteHeader, new ProfileView());
-render(siteMain, new NavMenuView(movieList));
+render(siteMain, new NavMenuView(filters, 'all'));
 
 const filmsPresenter = new FilmsPresenter(siteMain, filmsModel);
 filmsPresenter.init();
