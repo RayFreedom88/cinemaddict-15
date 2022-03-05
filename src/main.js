@@ -4,8 +4,9 @@ import FilmsModel from './model/films';
 import FilterModel from './model/filter';
 
 import ProfileView from './view/profile';
-import NavMenuView from './view/nav-menu';
+import NavMenuFilterView from './view/nav-menu-filter';
 
+import FilterPresenter from './presenter/filter';
 import FilmsPresenter from './presenter/films';
 
 import { render } from './utils/render';
@@ -13,14 +14,6 @@ import { render } from './utils/render';
 const FILMS_COUNT = 15;
 
 const movieList = new Array(FILMS_COUNT).fill().map(generateFilms);
-
-const filters = [
-  {
-    type: 'all',
-    name: 'All movies',
-    count: 0,
-  },
-];
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(movieList);
@@ -30,9 +23,14 @@ const filterModel = new FilterModel();
 const siteHeader = document.querySelector('.header');
 const siteMain = document.querySelector('.main');
 
+const navMenuComponent = new NavMenuFilterView();
+
+const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
+const filterPresenter = new FilterPresenter(navMenuComponent, filterModel, filmsModel);
+
 // рендер профиля, нафигации
 render(siteHeader, new ProfileView());
-render(siteMain, new NavMenuView(filters, 'all'));
+render(siteMain, navMenuComponent);
 
-const filmsPresenter = new FilmsPresenter(siteMain, filmsModel);
+filterPresenter.init();
 filmsPresenter.init();
