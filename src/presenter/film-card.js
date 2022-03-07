@@ -1,49 +1,71 @@
-import FilmCardView from '../view/film-card.js';
-import FilmDetailsView from '../view/film-details.js';
+import FilmCardView from '../view/film-card';
+import FilmDetailsView from '../view/film-details';
+import FilmDetailsCommentView from '../view/film-details-comment';
 import FilmDetailsNewCommentView from '../view/film-details-new-comment';
+
+import { generateComments } from '../mock/film';
 import { render, remove, replace } from '../utils/render';
+import { UserAction, UpdateType } from '../utils/const.js';
 import { isEscEvent } from '../utils/common';
 
 export default class FilmCard {
   constructor(filmContainer, changeData) {
-    this._body = document.querySelector('body');
     this._filmContainer = filmContainer;
     this._changeData = changeData;
+
+    this._bodyElement = document.querySelector('body');
 
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
 
     this._handleOpenFilmDetailsClick = this._handleOpenFilmDetailsClick.bind(this);
     this._handleCloseFilmDetailsClick = this._handleCloseFilmDetailsClick.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
 
     this._handleToWatchListClick = this._handleToWatchListClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
+
+    this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
+    this._handleAddComment = this._handleAddComment.bind(this);
+
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(film) {
-    this._film = film;
+  init(movie) {
+    this._movie = movie;
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardView(film);
-    this._filmDetailsComponent = new FilmDetailsView(film);
+    this._filmCardComponent = new FilmCardView(movie);
+    this._filmDetailsComponent = new FilmDetailsView(movie);
+    this._filmDetailsCommentsList = this._filmDetailsComponent.getElement().querySelector('.film-details__comments-list');
 
-    const filmDetailsCommentWrap = this._filmDetailsComponent.getElement().querySelector('.film-details__comments-wrap');
-
-    this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmCardComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
     this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+    this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._filmCardComponent.setOpenFilmDetailsClickHandler(this._handleOpenFilmDetailsClick);
 
     this._filmDetailsComponent.setAddToWatchListClickHandler(this._handleToWatchListClick);
-    this._filmDetailsComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetailsComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+    this._filmDetailsComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._filmDetailsComponent.setCloseFilmDetailsClickHandler(this._handleCloseFilmDetailsClick);
 
-    render(filmDetailsCommentWrap, new FilmDetailsNewCommentView);
+    const filmDetailsCommentWrap = this._filmDetailsComponent.getElement().querySelector('.film-details__comments-wrap');
+
+    for (let i = 0; i < this._movie.comments.length; i++) {
+      // render(filmDetailsCommentsList, new FilmDetailsCommentView(this._movie.comments[i]));
+      const filmDetailsCommentComponent = new FilmDetailsCommentView(this._movie.comments[i]);
+      render(this._filmDetailsCommentsList, filmDetailsCommentComponent);
+      filmDetailsCommentComponent.setCommentDeleteClickHandler(this._handleCommentDeleteClick);
+    }
+
+    const filmDetailsNewCommentComponent = new FilmDetailsNewCommentView();
+
+    render(filmDetailsCommentWrap, filmDetailsNewCommentComponent);
+    filmDetailsNewCommentComponent.setAddCommentHandler(this._handleAddComment);
 
     if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
       render(this._filmContainer, this._filmCardComponent);
@@ -54,7 +76,7 @@ export default class FilmCard {
       replace(this._filmCardComponent, prevFilmCardComponent);
     }
 
-    if (this._filmContainer.contains(prevFilmDetailsComponent.getElement())) {
+    if (this._bodyElement.contains(prevFilmDetailsComponent.getElement())) {
       replace(this._filmDetailsComponent, prevFilmDetailsComponent);
     }
 
@@ -68,19 +90,19 @@ export default class FilmCard {
   }
 
   _openFilmDetails() {
-    if (this._body.lastElementChild.className === 'film-details') {
-      this._body.lastElementChild.remove();
+    if (this._bodyElement.lastElementChild.className === 'film-details') {
+      this._bodyElement.lastElementChild.remove();
     }
 
-    this._body.appendChild(this._filmDetailsComponent.getElement());
-    this._body.classList.add('hide-overflow');
+    this._bodyElement.appendChild(this._filmDetailsComponent.getElement());
+    this._bodyElement.classList.add('hide-overflow');
 
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _closeFilmDetails() {
-    this._body.removeChild(this._filmDetailsComponent.getElement());
-    this._body.classList.remove('hide-overflow');
+    this._bodyElement.removeChild(this._filmDetailsComponent.getElement());
+    this._bodyElement.classList.remove('hide-overflow');
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
@@ -103,23 +125,13 @@ export default class FilmCard {
 
   _handleToWatchListClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
       Object.assign(
         {},
-        this._film,
+        this._movie,
         {
-          isWatchlist: !this._film.isWatchlist,
-        },
-      ),
-    );
-  }
-
-  _handleFavoriteClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          isFavorite: !this._film.isFavorite,
+          isWatchlist: !this._movie.isWatchlist,
         },
       ),
     );
@@ -127,11 +139,62 @@ export default class FilmCard {
 
   _handleMarkAsWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
       Object.assign(
         {},
-        this._film,
+        this._movie,
         {
-          isHistory: !this._film.isHistory,
+          isMarkAsWatched: !this._movie.isMarkAsWatched,
+        },
+      ),
+    );
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._movie,
+        {
+          isFavorite: !this._movie.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleCommentDeleteClick(id) {
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._movie,
+        {
+          comments: this._movie.comments.filter((comment) => comment.id !== id),
+        },
+      ),
+    );
+  }
+
+  _handleAddComment(newCommentEmotion, newCommentText) {
+    const newComment = generateComments();
+    newComment.text = newCommentText;
+    newComment.emotion = newCommentEmotion;
+
+    const updatedComments = this._movie.comments.slice();
+    updatedComments.push(newComment);
+
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._movie,
+        {
+          comments: updatedComments,
         },
       ),
     );

@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
-import AbstractView from './abstract.js';
+import AbstractView from './abstract';
+import { getFormatDate, getRuntime } from '../utils/common';
 
-const createFilmCardTpl = (film) => {
+const createFilmCardTpl = (movie) => {
   const {
     poster,
     title,
@@ -12,17 +12,21 @@ const createFilmCardTpl = (film) => {
     description,
     comments,
     isWatchlist,
-    isHistory,
+    isMarkAsWatched,
     isFavorite,
-  } = film;
+  } = movie;
 
-  const year = dayjs(releaseDate).format('YYYY');
+  const MAX_DESCRIPTION_LENGTH = 139;
+
+  const year = getFormatDate(releaseDate,'YYYY');
+
+  const getFilmCardDescription = () => (description.length > MAX_DESCRIPTION_LENGTH) ? `${description.substring(0, MAX_DESCRIPTION_LENGTH)}...`: description;
 
   const watchlistClassName = isWatchlist
     ? 'film-card__controls-item--add-to-watchlist film-card__controls-item--active'
     : 'film-card__controls-item--add-to-watchlist';
 
-  const historyClassName = isHistory
+  const markAsWatchedClassName = isMarkAsWatched
     ? 'film-card__controls-item--mark-as-watched film-card__controls-item--active'
     : 'film-card__controls-item--mark-as-watched';
 
@@ -36,15 +40,15 @@ const createFilmCardTpl = (film) => {
         <p class="film-card__rating">${rating}</p>
         <p class="film-card__info">
           <span class="film-card__releaseDate">${year}</span>
-          <span class="film-card__duration">${runtime}</span>
+          <span class="film-card__duration">${getRuntime(runtime)}</span>
           <span class="film-card__genre">${genres.join(', ')}</span>
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${description}</p>
+        <p class="film-card__description">${getFilmCardDescription()}</p>
         <a class="film-card__comments">${comments.length} comments</a>
         <div class="film-card__controls">
           <button class="film-card__controls-item ${watchlistClassName}" type="button">Add to watchlist</button>
-          <button class="film-card__controls-item ${historyClassName}" type="button">Mark as watched</button>
+          <button class="film-card__controls-item ${markAsWatchedClassName}" type="button">Mark as watched</button>
           <button class="film-card__controls-item ${favoriteClassName}" type="button">Mark as favorite</button>
         </div>
       </article>`
@@ -52,9 +56,9 @@ const createFilmCardTpl = (film) => {
 };
 
 export default class FilmCard extends AbstractView {
-  constructor(film) {
+  constructor(movie) {
     super();
-    this._film = film;
+    this._movie = movie;
 
     this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
@@ -64,7 +68,7 @@ export default class FilmCard extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmCardTpl(this._film);
+    return createFilmCardTpl(this._movie);
   }
 
   _openFilmDetailsClickHandler(evt) {
