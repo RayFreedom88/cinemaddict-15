@@ -48,28 +48,28 @@ export default class Filter {
   }
 
   _getFilters() {
-    const films = this._filmsModel.getFilms();
+    const movieList = this._filmsModel.getFilms();
 
     return [
       {
         type: FilterType.ALL,
         name: 'All movies',
-        count: filter[FilterType.ALL](films).length,
+        count: filter[FilterType.ALL](movieList).length,
       },
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: filter[FilterType.WATCHLIST](films).length,
+        count: filter[FilterType.WATCHLIST](movieList).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: filter[FilterType.HISTORY](films).length,
+        count: filter[FilterType.HISTORY](movieList).length,
       },
       {
         type: FilterType.FAVORITES,
         name: 'Favorites',
-        count: filter[FilterType.FAVORITES](films).length,
+        count: filter[FilterType.FAVORITES](movieList).length,
       },
     ];
   }

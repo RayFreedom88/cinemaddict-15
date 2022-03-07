@@ -6,6 +6,7 @@ import FilmsListView from '../view/film-list';
 import ShowMoreButtonView from '../view/show-more-button';
 import FilmCardPresenter from './film-card';
 
+import { filter } from '../utils/filter.js';
 import { render, remove, RenderPosition } from '../utils/render';
 import { SortType, UpdateType, UserAction } from '../utils/const';
 import { sortByDate, sortByRating } from '../utils/common';
@@ -13,9 +14,10 @@ import { sortByDate, sortByRating } from '../utils/common';
 const FILMS_COUNT_PER_STEP = 5;
 
 export default class Films {
-  constructor(filmsContainer, filmsModel) {
+  constructor(filmsContainer, filmsModel, filterModel) {
     this._filmsContainer = filmsContainer;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
     this._renderedFilmCount = FILMS_COUNT_PER_STEP;
 
     this._filmPresenterMap = new Map();
@@ -34,6 +36,7 @@ export default class Films {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -43,14 +46,18 @@ export default class Films {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilter();
+    const movieList = this._filmsModel.getFilms();
+    const filtredFilms = filter[filterType](movieList);
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getFilms().slice().sort(sortByDate);
+        return filtredFilms.sort(sortByDate);
       case SortType.RATING:
-        return this._filmsModel.getFilms().slice().sort(sortByRating);
+        return filtredFilms.sort(sortByRating);
     }
 
-    return this._filmsModel.getFilms();
+    return filtredFilms;
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -179,8 +186,8 @@ export default class Films {
   }
 
   _renderFilms() {
-    const films = this._getFilms();
-    const filmsCount = films.length;
+    const movieList = this._getFilms();
+    const filmsCount = movieList.length;
 
     if (filmsCount === 0) {
       this._renderNoFilm();
@@ -189,7 +196,7 @@ export default class Films {
 
     this._renderSort();
     this._renderFilmsList();
-    this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._renderedFilmCount)));
+    this._renderFilmCards(movieList.slice(0, Math.min(filmsCount, this._renderedFilmCount)));
 
     if (filmsCount > this._renderedFilmCount) {
       this._renderShowMoreButton();

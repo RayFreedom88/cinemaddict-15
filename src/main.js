@@ -23,14 +23,12 @@ const filterModel = new FilterModel();
 const siteHeader = document.querySelector('.header');
 const siteMain = document.querySelector('.main');
 
-const navMenuComponent = new NavMenuFilterView();
-
 const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
-const filterPresenter = new FilterPresenter(navMenuComponent, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(siteMain, filterModel, filmsModel);
 
 // рендер профиля, нафигации
 render(siteHeader, new ProfileView());
-render(siteMain, navMenuComponent);
+// render(siteMain, new NavMenuFilterView());
 
 filterPresenter.init();
 filmsPresenter.init();
