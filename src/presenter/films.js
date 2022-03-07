@@ -146,9 +146,9 @@ export default class Films {
   _handleShowMoreButtonClick() {
     const filmsCount = this._getFilms().length;
     const newRenderedFilmCount = Math.min(filmsCount, this._renderedFilmCount + FILMS_COUNT_PER_STEP);
-    const films = this._getFilms().slice(this._renderedFilmCount, newRenderedFilmCount);
+    const movieList = this._getFilms().slice(this._renderedFilmCount, newRenderedFilmCount);
 
-    this._renderFilmCards(films);
+    this._renderFilmCards(movieList);
     this._renderedFilmCount = newRenderedFilmCount;
 
     if (this._renderedFilmCount >= filmsCount) {
