@@ -75,6 +75,9 @@ export default class Films {
       case UserAction.DELETE_COMMENT:
         this._filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.ADD_COMMENT:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
     }
   }
 

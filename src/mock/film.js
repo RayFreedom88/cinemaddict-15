@@ -40,7 +40,7 @@ const getRandomDate = () => {
   return dayjs(day);
 };
 
-const getComments = () => ({
+export const generateComments = () => ({
   id: nanoid(),
   text: getRandomIndex(COMMENTS),
   emotion: getRandomIndex(EMOTIONS),
@@ -52,7 +52,7 @@ export const generateFilms = () => {
   const actors = new Array(getRandom(2, 6)).fill().map(() => getRandomIndex(ARRAY_ACTORS));
   const writers = new Array(getRandom(1, 3)).fill().map(() => getRandomIndex(ARRAY_WRITERS));
   const genres = new Array(getRandom(1,2)).fill().map(() => getRandomIndex(ARRAY_GENRES));
-  const comments = new  Array(getRandom(0, 5)).fill().map(() => getComments());
+  const comments = new  Array(getRandom(0, 5)).fill().map(() => generateComments());
 
   return {
     id: nanoid(),
