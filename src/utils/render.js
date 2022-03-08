@@ -1,12 +1,12 @@
 import Abstract from '../view/abstract';
 
 export const RenderPosition = {
+  BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
-  BEFOREBEGIN: 'beforebegin',
+  AFTEREND: 'afterend',
 };
 
-// функция отрисовки компонентов
 export const render = (container, child, place = RenderPosition.BEFOREEND) => {
   if (container instanceof Abstract) {
     container = container.getElement();
@@ -17,24 +17,19 @@ export const render = (container, child, place = RenderPosition.BEFOREEND) => {
   }
 
   switch (place) {
+    case RenderPosition.BEFOREBEGIN:
+      container.before(child);
+      break;
     case RenderPosition.AFTERBEGIN:
       container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
       container.append(child);
       break;
-    case RenderPosition.BEFOREBEGIN:
-      container.before(child);
+    case RenderPosition.AFTEREND:
+      container.after(child);
       break;
   }
-};
-
-// функция создания DOM-элемента
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
 };
 
 export const replace = (newChild, oldChild) => {
@@ -66,4 +61,11 @@ export const remove = (component) => {
 
   component.getElement().remove();
   component.removeElement();
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div'); // 1
+  newElement.innerHTML = template; // 2
+
+  return newElement.firstChild; // 3
 };

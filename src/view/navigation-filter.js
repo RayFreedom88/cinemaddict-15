@@ -1,28 +1,28 @@
 import AbstractView from './abstract';
 
-const createFilterItemTpl = (filter, currentFilterType) => {
+const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
-
   return `<a
     href="#${type}"
     class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
-    title="${type} data-name="${currentFilterType}">
+    title="${type}"
+    data-name="${currentFilterType}">
       ${name}
       ${type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : ''}
   </a>`;
 };
 
-const createNavMenuFilterTpl = (filterItems, currentFilterType) => {
-  const filterItemsTpl = filterItems
-    .map((filter) => createFilterItemTpl(filter, currentFilterType))
+const createNavigationFilterTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
 
   return `<div class="main-navigation__items">
-    ${filterItemsTpl}
+    ${filterItemsTemplate}
     </div>`;
 };
 
-export default class NavMenuFilter extends AbstractView {
+export default class NavigationFilter extends AbstractView {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
@@ -32,7 +32,7 @@ export default class NavMenuFilter extends AbstractView {
   }
 
   getTemplate() {
-    return createNavMenuFilterTpl(this._filters, this._currentFilter);
+    return createNavigationFilterTemplate(this._filters, this._currentFilter);
   }
 
   _filterClickHandler(evt) {

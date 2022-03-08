@@ -1,10 +1,12 @@
+import dayjs from 'dayjs';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import AbstractSmartView from './abstract-smart';
+import SmartView from './smart';
 
-import { StatsFilterType, getFilmsByPeriod, getWatchedFilms, getChartOptions, applyUpperSnakeCase, getRank } from '../utils/stats';
-import { getRuntime } from '../utils/common';
+import { getWatchedFilmsAmount, getRank} from '../utils/common';
+import { getSortedGenres } from './utils';
+import { StatsFilterType, getFilmsByPeriod, applyUpperSnakeCase } from '../utils/stats';
 
 const getChart = (statisticCtx, data) => {
   const BAR_HEIGHT = 50;
@@ -79,31 +81,38 @@ const createRankTemplate = (rank) => (
 
 const createStatsTemplate = (data) => (
   `<section class="statistic">
-    ${data.watchedAmount ? createRankTemplate(getRank(data.watchedAmount)) : ''}
+    ${data.wathedFilmsAmount ? createRankTemplate(getRank(data.wathedFilmsAmount)) : ''}
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${(data.target === 'all-time') ? 'checked' : ''}>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${(data.checkedFilter === 'all-time') ? 'checked' : ''}>
       <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${(data.target === 'today') ? 'checked' : ''}>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${(data.checkedFilter === 'today') ? 'checked' : ''}>
       <label for="statistic-today" class="statistic__filters-label">Today</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${(data.target === 'week') ? 'checked' : ''}>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${(data.checkedFilter === 'week') ? 'checked' : ''}>
       <label for="statistic-week" class="statistic__filters-label">Week</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${(data.target === 'month') ? 'checked' : ''}>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${(data.checkedFilter === 'month') ? 'checked' : ''}>
       <label for="statistic-month" class="statistic__filters-label">Month</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${(data.target === 'year') ? 'checked' : ''}>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${(data.checkedFilter === 'year') ? 'checked' : ''}>
       <label for="statistic-year" class="statistic__filters-label">Year</label>
     </form>
+
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
         <p class="statistic__item-text">
-          ${data.watchedAmount} <span class="statistic__item-description">movies</span>
+          ${data.wathedFilmsAmount} <span class="statistic__item-description">movies</span>
         </p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
         <p class="statistic__item-text">
-          ${getRuntime(data.totalDuration)}
+          ${dayjs.duration(data.wathedFilmsTotalDuration, 'minutes').hours()} <span class="statistic__item-description">h</span>
+          ${dayjs.duration(data.wathedFilmsTotalDuration, 'minutes').minutes()} <span class="statistic__item-description">m</span>
         </p>
       </li>
       <li class="statistic__text-item">
@@ -113,18 +122,19 @@ const createStatsTemplate = (data) => (
         </p>
       </li>
     </ul>
+
     <div class="statistic__chart-wrap">
       <canvas class="statistic__chart" width="1000"></canvas>
     </div>
+
   </section>`
 );
 
-export default class StatsView extends AbstractSmartView {
-  constructor(movieList) {
+export default class StatsView extends SmartView {
+  constructor(films) {
     super();
-    //this._rank = rank;
-    this._movieList = getWatchedFilms(movieList);
-    this._data = StatsView.parseFilmsToData(this._movieList);
+    this._films = films.filter((film) => film.isAlreadyWatched);
+    this._data = StatsView.parseFilmsToData(this._films);
     this._chart = null;
     this._setChart();
 
@@ -150,13 +160,13 @@ export default class StatsView extends AbstractSmartView {
 
   _statsFiltersChangeHandler(evt) {
     this._data = StatsView.parseFilmsToData(getFilmsByPeriod(
-      this._movieList,
+      this._films,
       StatsFilterType[applyUpperSnakeCase(evt.target.value)].shorthand),
     );
 
     evt.preventDefault();
     this.updateData({
-      target: evt.target.value,
+      checkedFilter: evt.target.value,
     });
   }
 
@@ -169,12 +179,17 @@ export default class StatsView extends AbstractSmartView {
     this._chart = getChart(statisticCtx, this._data);
   }
 
-  static parseFilmsToData(movieList) {
+  static parseFilmsToData(films) {
+    const sortedGenres = getSortedGenres(films);
+
     return {
-      target: StatsFilterType.ALL_TIME.name,
-      watchedAmount: movieList.length,
-      totalDuration: movieList.reduce((acc, movie) => (acc + movie.runtime), 0),
-      ...getChartOptions(movieList),
+      wathedFilmsAmount: getWatchedFilmsAmount(films),
+      wathedFilmsTotalDuration: films.reduce((acc, film) => (acc + film.runtime), 0),
+      genres: sortedGenres.map((genre) => genre[0]),
+      counts: sortedGenres.map((genre) => genre[1]),
+      topGenre: sortedGenres[0][0],
+
+      checkedFilter: StatsFilterType.ALL_TIME.name,
     };
   }
 }

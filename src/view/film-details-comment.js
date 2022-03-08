@@ -1,25 +1,26 @@
-import AbstractView from './abstract';
-import { getFormatDate } from '../utils/common';
+import dayjs from 'dayjs';
 import he from 'he';
 
-const createFilmDetailsCommentTpl = (comment) => {
-  const {id, text, emotion, author, commentDate} = comment;
+import AbstractView from './abstract';
 
-  const date = getFormatDate(commentDate, 'YYYY/MM/DD HH:mm');
+const createFilmDetailsCommentTemplate = (comment) => {
+  const {id, emotion, date, text, author} = comment;
+
+  const commentDate = dayjs(date).format('YYYY/MM/DD HH:mm');
 
   return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>
     <div>
       <p class="film-details__comment-text">${he.encode(text)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${date}</span>
+        <span class="film-details__comment-day">${commentDate}</span>
         <button class="film-details__comment-delete" data-id="${id}">Delete</button>
       </p>
     </div>
-    </li>`;
+  </li>`;
 };
 
 export default class FilmDetailsComment extends AbstractView {
@@ -31,7 +32,7 @@ export default class FilmDetailsComment extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmDetailsCommentTpl(this.comment);
+    return createFilmDetailsCommentTemplate(this.comment);
   }
 
   _commentDeleteClickHandler(evt) {

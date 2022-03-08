@@ -1,6 +1,6 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract';
 
-const createButtonShowMoreTpl = () => (
+const createShowMoreButtonTemplate = () => (
   '<button class="films-list__show-more">Show more</button>'
 );
 
@@ -12,7 +12,7 @@ export default class ShowMoreButton extends AbstractView {
   }
 
   getTemplate() {
-    return createButtonShowMoreTpl();
+    return createShowMoreButtonTemplate();
   }
 
   _clickHandler(evt) {
@@ -22,6 +22,7 @@ export default class ShowMoreButton extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.click = callback;
+
     this.getElement().addEventListener('click', this._clickHandler);
   }
 }

@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 
-export default class AbstractSmart extends AbstractView {
+export default class Smart extends AbstractView {
   constructor() {
     super();
     this._data = {};
@@ -32,10 +32,10 @@ export default class AbstractSmart extends AbstractView {
     parent.replaceChild(newElement, prevElement);
 
     this.getElement().scrollTop = scrollPosition;
-    this.recoveryHandlers();
+    this.restoreHandlers();
   }
 
-  recoveryHandlers() {
+  restoreHandlers() {
     throw new Error('Abstract method not implemented: resetHandlers');
   }
 }

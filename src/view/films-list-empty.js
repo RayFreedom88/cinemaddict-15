@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract';
 
 import { FilterType } from '../utils/const';
 
@@ -9,7 +9,7 @@ const FilmListEmptyTextType = {
   [FilterType.FAVORITES]: 'There are no favorite movies now',
 };
 
-const createFilmsListEmptyTpl = (filterType) => {
+const createFilmsListEmptyTemplate = (filterType) => {
   const filmListEmptyTextValue = FilmListEmptyTextType[filterType];
 
   return `<section class="films-list">
@@ -24,6 +24,6 @@ export default class FilmsListEmpty extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmsListEmptyTpl(this._data);
+    return createFilmsListEmptyTemplate(this._data);
   }
 }

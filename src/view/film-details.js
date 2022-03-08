@@ -1,201 +1,155 @@
 import AbstractView from './abstract';
-import { getFormatDate, getRuntime } from '../utils/common';
 
-const createGenreTpl = (genre) => `<span class="film-details__genre">${genre}</span>`;
+import { renderGenres, getFilmRuntime, getReleaseDate } from './utils';
 
-const getGenre = (genres) => {
-  const arrayGenre = genres.map((genre) => createGenreTpl(genre));
-  return arrayGenre;
-};
+const createFilmDetailsTemplate = (film) => {
+  const {poster, ageRating, title, alternativeTitle, totalRating, director, writers, actors, releaseDate, runtime, releaseCountry, genres, description, isInWatchList, isAlreadyWatched, isFavorite, comments} = film;
 
-const createFilmDetailsTpl = (movie) => {
-  const {
-    poster,
-    title,
-    originalTitle,
-    rating,
-    ageRating,
-    director,
-    writers,
-    actors,
-    releaseDate,
-    runtime,
-    releaseCountry,
-    genres,
-    description,
-    comments,
-    isWatchlist,
-    isMarkAsWatched,
-    isFavorite,
-  } = movie;
-
-  const date = getFormatDate(releaseDate, 'DD MMMM YYYY');
+  const defineButtonActiveState = (condition) => {
+    if (condition) {
+      return 'film-details__control-button--active';
+    }
+  };
 
   const genresHeading = genres.length > 1 ? 'Genres' : 'Genre';
 
-  const watchlistClassName = isWatchlist
-    ? 'film-details__control-button--watchlist film-details__control-button--active'
-    : 'film-details__control-button--watchlist';
-
-  const markAsWatchedClassName = isMarkAsWatched
-    ? 'film-details__control-button--watched film-details__control-button--active'
-    : 'film-details__control-button--watched';
-
-  const favoriteClassName = isFavorite
-    ? 'film-details__control-button--favorite film-details__control-button--active'
-    : 'film-details__control-button--favorite';
-
-  return (
-    `<section class="film-details">
-      <form class="film-details__inner" action="" method="get">
-        <div class="film-details__top-container">
-          <div class="film-details__close">
-            <button class="film-details__close-btn" type="button">close</button>
-          </div>
-
-          <div class="film-details__info-wrap">
-            <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
-              <p class="film-details__age">${ageRating}+</p>
-            </div>
-
-            <div class="film-details__info">
-              <div class="film-details__info-head">
-                <div class="film-details__title-wrap">
-                  <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">${originalTitle}</p>
+  return `<section class="film-details">
+            <form class="film-details__inner" action="" method="get">
+              <div class="film-details__top-container">
+                <div class="film-details__close">
+                  <button class="film-details__close-btn" type="button">close</button>
                 </div>
 
-                <div class="film-details__rating">
-                  <p class="film-details__total-rating">${rating}</p>
+                <div class="film-details__info-wrap">
+                  <div class="film-details__poster">
+                    <img class="film-details__poster-img" src="${poster}" alt="${title} poster">
+                    <p class="film-details__age">${ageRating}</p>
+                  </div>
+
+                  <div class="film-details__info">
+                    <div class="film-details__info-head">
+                      <div class="film-details__title-wrap">
+                        <h3 class="film-details__title">${title}</h3>
+                        <p class="film-details__title-original">${alternativeTitle}</p>
+                      </div>
+
+                      <div class="film-details__rating">
+                        <p class="film-details__total-rating">${totalRating}</p>
+                      </div>
+                    </div>
+
+                    <table class="film-details__table">
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Director</td>
+                        <td class="film-details__cell">${director}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Writers</td>
+                        <td class="film-details__cell">${writers.join(', ')}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Actors</td>
+                        <td class="film-details__cell">${actors.join(', ')}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Release Date</td>
+                        <td class="film-details__cell">${getReleaseDate(releaseDate, 'DD MMMM YYYY')}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Runtime</td>
+                        <td class="film-details__cell">${getFilmRuntime(runtime)}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">Country</td>
+                        <td class="film-details__cell">${releaseCountry}</td>
+                      </tr>
+
+                      <tr class="film-details__row">
+                        <td class="film-details__term">${genresHeading}</td>
+                        <td class="film-details__cell">${renderGenres(genres, 'details')}</td>
+                      </tr>
+                    </table>
+
+                    <p class="film-details__film-description">${description}</p>
+                  </div>
                 </div>
+
+                <section class="film-details__controls">
+                  <button type="button" class="film-details__control-button film-details__control-button--watchlist ${defineButtonActiveState(isInWatchList)}" id="watchlist" name="watchlist">Add to watchlist</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--watched ${defineButtonActiveState(isAlreadyWatched)}" id="watched" name="watched">Already watched</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--favorite ${defineButtonActiveState(isFavorite)}" id="favorite" name="favorite">Add to favorites</button>
+                </section>
               </div>
 
-              <table class="film-details__table">
-                <tr class="film-details__row">
-                  <td class="film-details__term">Director</td>
-                  <td class="film-details__cell">${director}</td>
-                </tr>
+              <div class="film-details__bottom-container">
+                <section class="film-details__comments-wrap">
+                  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+                  <ul class="film-details__comments-list">
+                  </ul>
 
-                <tr class="film-details__row">
-                  <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers.join(', ')}</td>
-                </tr>
-
-                <tr class="film-details__row">
-                  <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors.join(', ')}</td>
-                </tr>
-
-                <tr class="film-details__row">
-                  <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${date}</td>
-                </tr>
-
-                <tr class="film-details__row">
-                  <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${getRuntime(runtime)}</td>
-                </tr>
-
-                <tr class="film-details__row">
-                  <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${releaseCountry}</td>
-                </tr>
-
-                <tr class="film-details__row">
-                  <td class="film-details__term">${genresHeading}</td>
-                  <td class="film-details__cell">
-                    ${getGenre(genres).join('')}
-                </tr>
-              </table>
-
-              <p class="film-details__film-description">
-                ${description}
-              </p>
-            </div>
-          </div>
-
-          <section class="film-details__controls">
-            <button type="button" class="film-details__control-button ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-            <button type="button" class="film-details__control-button ${markAsWatchedClassName}" id="watched" name="watched">Already watched</button>
-            <button type="button" class="film-details__control-button ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
-          </section>
-        </div>
-
-        <div class="film-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-
-            <ul class="film-details__comments-list">
-
-            </ul>
-          </section>
-        </div>
-      </form>
-    </section>`
-  );
+                </section>
+              </div>
+            </form>
+          </section>`;
 };
-// предыдушая реализаци добавления комментов
-/* <ul class="film-details__comments-list">
-  ${getComment(comments).join('')}
-</ul> */
 
 export default class FilmDetails extends AbstractView {
-  constructor(movie) {
+  constructor(film) {
     super();
-    this._movie = movie;
+    this._film = film;
 
     this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+    this._favouriteClickHandler = this._favouriteClickHandler.bind(this);
 
     this._closeFilmDetailsClickHandler = this._closeFilmDetailsClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmDetailsTpl(this._movie);
+    return createFilmDetailsTemplate(this._film);
   }
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
-
-    this._callback.toWatchListClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-
-    this._callback.favoriteClick();
+    this._callback.addToWatchListClick();
   }
 
   _markAsWatchedClickHandler(evt) {
     evt.preventDefault();
-
     this._callback.markAsWatchedClick();
+  }
+
+  _favouriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favouriteClick();
   }
 
   _closeFilmDetailsClickHandler(evt) {
     evt.preventDefault();
-
     this._callback.closeFilmDetailsClick();
   }
 
   setAddToWatchListClickHandler(callback) {
-    this._callback.toWatchListClick = callback;
+    this._callback.addToWatchListClick = callback;
 
     this.getElement().querySelector('.film-details__control-button--watchlist').addEventListener('click', this._addToWatchListClickHandler);
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-
-    this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
   setMarkAsWatchedClickHandler(callback) {
     this._callback.markAsWatchedClick = callback;
 
     this.getElement().querySelector('.film-details__control-button--watched').addEventListener('click', this._markAsWatchedClickHandler);
+  }
+
+  setFavouriteClickHandler(callback) {
+    this._callback.favouriteClick = callback;
+
+    this.getElement().querySelector('.film-details__control-button--favorite').addEventListener('click', this._favouriteClickHandler);
   }
 
   setCloseFilmDetailsClickHandler(callback) {

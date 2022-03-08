@@ -1,8 +1,10 @@
+export const MINUTES_IN_HOUR = 60;
+export const MAX_DESCRIPTION_LENGTH = 139;
+
 export const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
   RATING: 'rating',
-  STATS: 'stats',
 };
 
 export const UserAction = {
@@ -22,4 +24,5 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+  STATS: 'stats',
 };

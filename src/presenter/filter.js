@@ -1,4 +1,4 @@
-import NavMenuFilterView from '../view/nav-menu-filter';
+import NavigationFilterView from '../view/navigation-filter';
 
 import { render, RenderPosition, replace, remove } from '../utils/render';
 import { filter } from '../utils/filter';
@@ -23,7 +23,7 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new NavMenuFilterView(filters, this._filterModel.getFilter());
+    this._filterComponent = new NavigationFilterView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterClickHandler(this._handleFilterClick);
 
     if (prevFilterComponent === null) {
@@ -48,28 +48,28 @@ export default class Filter {
   }
 
   _getFilters() {
-    const movieList = this._filmsModel.getFilms();
+    const films = this._filmsModel.getFilms();
 
     return [
       {
         type: FilterType.ALL,
         name: 'All movies',
-        count: filter[FilterType.ALL](movieList).length,
+        count: filter[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: filter[FilterType.WATCHLIST](movieList).length,
+        count: filter[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: filter[FilterType.HISTORY](movieList).length,
+        count: filter[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
         name: 'Favorites',
-        count: filter[FilterType.FAVORITES](movieList).length,
+        count: filter[FilterType.FAVORITES](films).length,
       },
     ];
   }
