@@ -5,11 +5,12 @@ import FilterModel from './model/filter';
 
 import ProfileView from './view/profile';
 import NavMenuView from './view/nav-menu';
+import StatsView from './view/stats';
 
 import FilterPresenter from './presenter/filter';
 import FilmsPresenter from './presenter/films';
 
-import { render } from './utils/render';
+import { render, RenderPosition } from './utils/render';
 import { FilterType } from './utils/const';
 
 const FILMS_COUNT = 15;
@@ -75,4 +76,6 @@ const handleNavMenuClick = (filterType) => {
 siteNavMenu.setNavMenuClickHandler(handleNavMenuClick);
 
 filterPresenter.init();
-filmsPresenter.init();
+// filmsPresenter.init();
+
+render(siteMain, new StatsView(), RenderPosition.AFTEREND);
