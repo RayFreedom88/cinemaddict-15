@@ -10,7 +10,7 @@ import StatsView from './view/stats';
 import FilterPresenter from './presenter/filter';
 import FilmsPresenter from './presenter/films';
 
-import { render, RenderPosition } from './utils/render';
+import { remove, render, RenderPosition } from './utils/render';
 import { FilterType } from './utils/const';
 
 const FILMS_COUNT = 15;
@@ -31,8 +31,10 @@ const filmsPresenter = new FilmsPresenter(siteMain, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteNavMenu, filterModel, filmsModel);
 
 // рендер профиля, нафигации
-render(siteHeader, new ProfileView());
+render(siteHeader, new ProfileView(movieList));
 render(siteMain, siteNavMenu);
+
+let statsComponent = null;
 
 const handleNavMenuClick = (filterType) => {
   //придумать нормальное решение для переключения класса
@@ -47,28 +49,29 @@ const handleNavMenuClick = (filterType) => {
 
   switch (filterType) {
     case FilterType.ALL:
-      // Скрыть статистику
+      remove(statsComponent);
       filmsPresenter.destroy();
       filmsPresenter.init();
       break;
     case FilterType.WATCHLIST:
-      // Скрыть статистику
+      remove(statsComponent);
       filmsPresenter.destroy();
       filmsPresenter.init();
       break;
     case FilterType.HISTORY:
-      // Скрыть статистику
+      remove(statsComponent);
       filmsPresenter.destroy();
       filmsPresenter.init();
       break;
     case FilterType.FAVORITES:
-      // Скрыть статистику
+      remove(statsComponent);
       filmsPresenter.destroy();
       filmsPresenter.init();
       break;
     case FilterType.STATS:
       filmsPresenter.destroy();
-      // Показать статистику
+      statsComponent = new StatsView(filmsModel.getFilms());
+      render(siteMain, statsComponent, RenderPosition.AFTEREND);
       break;
   }
 };
@@ -78,4 +81,3 @@ siteNavMenu.setNavMenuClickHandler(handleNavMenuClick);
 filterPresenter.init();
 // filmsPresenter.init();
 
-render(siteMain, new StatsView(), RenderPosition.AFTEREND);

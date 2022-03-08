@@ -2,6 +2,7 @@ export const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
   RATING: 'rating',
+  STATS: 'stats',
 };
 
 export const UserAction = {
