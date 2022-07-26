@@ -483,11 +483,11 @@ button {
 }
 
 
-.film-card .film-card__poster {
+.film-card:hover .film-card__poster {
   bottom: calc(100% - 340px);
 }
 
-.film-card .film-card__controls {
+.film-card:hover .film-card__controls {
   height: 50px;
 }
 
@@ -881,7 +881,7 @@ button {
 }
 .film-details__comment-input {
   width: 100%;
-  height: 50px;
+  height: 70px;
   border-radius: 5px;
   border: solid 1px #979797;
   background-color: #f6f6f6;
@@ -894,7 +894,7 @@ button {
   outline: none;
 }
 .film-details__comment-input::placeholder {
-  color: #212126;
+  color: gray;
 }
 .film-details__comment-label {
   width: 100%;
